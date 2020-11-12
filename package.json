@@ -1,0 +1,33 @@
+{
+  "name": "mbook-api",
+  "version": "1.0.0",
+  "description": "book app",
+  "main": "src/index.js",
+  "author": "Goran Tenic",
+  "license": "MIT",
+  "scripts": {
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
+  },
+  "dependencies": {
+    "dotenv-safe": "^8.2.0",
+    "knex": "^0.21.12",
+    "lodash": "^4.17.20",
+    "pg": "^8.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-gtenic": "1.0.3",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^24.0.1",
+    "jest": "^26.4.2",
+    "prettier": "^2.1.1"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-gtenic"
+  },
+  "prettier": {
+    "trailingComma": "all"
+  }
+}
