@@ -1,6 +1,7 @@
 // Update with your config settings.
 
 const config = require("./src/config");
+const path = require("path");
 
 module.exports = {
   development: {
@@ -11,10 +12,10 @@ module.exports = {
       password: config.DB_PASSWORD,
     },
     migrations: {
-      directory: "./db/migrations",
+      directory: path.join(process.cwd(), "db", "migrations"),
     },
     seeds: {
-      directory: "./db/seeds",
+      directory: path.join(process.cwd(), "db", "seeds"),
     },
   },
 };

@@ -6,14 +6,23 @@
   "author": "Goran Tenic",
   "license": "MIT",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src",
+    "test": "jest --watch",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback"
   },
   "dependencies": {
+    "axios": "^0.21.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv-safe": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^4.2.0",
     "knex": "^0.21.12",
     "lodash": "^4.17.20",
-    "pg": "^8.5.0"
+    "pg": "^8.5.0",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eslint": "^7.9.0",
@@ -22,7 +31,10 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^24.0.1",
     "jest": "^26.4.2",
-    "prettier": "^2.1.1"
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.1.1",
+    "supertest": "^6.0.1"
   },
   "eslintConfig": {
     "extends": "eslint-config-gtenic"

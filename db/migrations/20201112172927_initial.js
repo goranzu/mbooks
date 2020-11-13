@@ -28,6 +28,7 @@ exports.up = async function (knex) {
       table.string("description", 1000);
       table.string("image_url", 2000);
       table.string("average_rating");
+      table.string("publication_year", 4);
       addDefaultColumns(table);
     }),
   ]);
