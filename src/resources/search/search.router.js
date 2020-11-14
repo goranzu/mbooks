@@ -1,11 +1,11 @@
 "use strict";
 
-const express = require("express");
+const { Router } = require("express");
 const axios = require("axios").default;
 const config = require("../../config");
-const searchRouter = express.Router();
 const xml2js = require("xml2js");
 
+const searchRouter = Router();
 const parser = new xml2js.Parser();
 
 async function fetchDataFromGoodreadsApi(url) {

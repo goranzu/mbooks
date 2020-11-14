@@ -1,8 +1,8 @@
 "use strict";
 
-const express = require("express");
+const { Router } = require("express");
 
-const bookRouter = express.Router();
+const bookRouter = Router();
 
 bookRouter.route("/").post(function createBook(req, res) {
   return res.status(201).json({ data: [] });
