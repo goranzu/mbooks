@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const errorMessages = require("../../constants/errorMessages");
 const { app } = require("../../server");
 const User = require("../user/user.model");
+const { signToken } = require("../../lib/jwt");
 
 describe("User Signup", () => {
   let user;
@@ -108,5 +109,48 @@ describe("User Signin", () => {
       .expect(403)
       .expect("Content-Type", /json/);
     expect(body.errors).toHaveLength(2);
+  });
+});
+
+describe("Protect Middleware", () => {
+  let user;
+  let token;
+  let userInDb;
+  beforeEach(async () => {
+    await User.query().delete();
+    user = {
+      email: faker.internet.email(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+    };
+    userInDb = await User.query().insert(user);
+    token = await signToken(userInDb);
+  });
+
+  test("should return 401 if no authorization token is present", async () => {
+    const { body } = await supertest(app)
+      .get("/me")
+      .set("Authorization", `Bearerrrr ${token}`)
+      .expect(401)
+      .expect("Content-Type", /json/);
+    expect(body.message).toBe(errorMessages.notAuthenticated);
+  });
+
+  test("should return 401 if token is not valid", async () => {
+    const { body } = await supertest(app)
+      .get("/me")
+      .set("Authorization", `Bearer ${token}asdasd`)
+      .expect(401)
+      .expect("Content-Type", /json/);
+    expect(body.message).toBe(errorMessages.notAuthenticated);
+  });
+
+  test("should return 200 if token is valid", async () => {
+    const { body } = await supertest(app)
+      .get("/me")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200)
+      .expect("Content-Type", /json/);
+    expect(body.data.id).toBe(userInDb.id);
   });
 });

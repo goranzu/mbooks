@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src",
-    "test": "jest --watch --detectOpenHandles",
+    "test": "jest --watch",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback"
   },

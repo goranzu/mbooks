@@ -10,7 +10,6 @@ const middlewares = require("./middlewares");
 const { searchRouter } = require("./resources/search/search.router");
 const bookRouter = require("./resources/book/book.router");
 const authRouter = require("./resources/auth/auth.router");
-const User = require("./resources/user/user.model");
 
 const app = express();
 
@@ -20,15 +19,16 @@ app.use(helmet());
 app.use(cors());
 config.isDev && app.use(morgan("dev"));
 
-app.use(function injectDBModels(req, res, next) {
-  req.User = User;
-  next();
-});
+app.use(middlewares.addDBModelsToRequest);
 
 app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ data: { message: "☸ App" } });
+});
+
+app.get("/me", middlewares.protect, (req, res) => {
+  return res.status(200).json({ data: { id: req.user } });
 });
 
 app.use("/api/v1/search", searchRouter);

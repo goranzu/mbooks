@@ -26,4 +26,20 @@ function signToken({ id, username, email }) {
   });
 }
 
-module.exports = { signToken };
+function verifyToken(token) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      token,
+      config.jwt.secret,
+      { ignoreExpiration: false },
+      (err, payload) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(payload);
+      },
+    );
+  });
+}
+
+module.exports = { signToken, verifyToken };

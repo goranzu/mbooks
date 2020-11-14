@@ -2,6 +2,8 @@
 
 const config = require("./config");
 const errorMessages = require("./constants/errorMessages");
+const { verifyToken } = require("./lib/jwt");
+const User = require("./resources/user/user.model");
 
 function notFound(req, res, next) {
   const error = new Error(`Not Found - ${req.originalUrl}`);
@@ -28,4 +30,34 @@ function errorHandler(err, req, res, _next) {
   });
 }
 
-module.exports = { notFound, errorHandler };
+async function protect(req, res, next) {
+  try {
+    const { authorization } = req.headers;
+    if (authorization == null || !authorization.startsWith("Bearer ")) {
+      res.status(401);
+      return next(new Error(errorMessages.notAuthenticated));
+    }
+
+    const token = authorization.split("Bearer ")[1];
+    if (token == null) {
+      res.status(401);
+      return next(new Error(errorMessages.notAuthenticated));
+    }
+
+    const payload = await verifyToken(token);
+
+    req.user = payload.sub;
+
+    next();
+  } catch (error) {
+    res.status(401);
+    next(new Error(errorMessages.notAuthenticated));
+  }
+}
+
+function addDBModelsToRequest(req, res, next) {
+  req.User = User;
+  next();
+}
+
+module.exports = { notFound, errorHandler, protect, addDBModelsToRequest };
