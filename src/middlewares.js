@@ -3,6 +3,7 @@
 const config = require("./config");
 const errorMessages = require("./constants/errorMessages");
 const { verifyToken } = require("./lib/jwt");
+const Book = require("./resources/book/book.model");
 const User = require("./resources/user/user.model");
 
 function notFound(req, res, next) {
@@ -18,14 +19,17 @@ function errorHandler(err, req, res, _next) {
   if (err.name === "ValidationError") {
     statusCode = 403;
   }
-  if (err.name === "UniqueViolationError") {
+  if (err.name === "UniqueViolationError" || err.code === "23505") {
     statusCode = 403;
-    err.message = errorMessages.emailRegisterd;
+    err.message = "Duplicate resource exists";
+    err.path = req.originalUrl;
+    // err.message = errorMessages.emailRegisterd;
   }
   // console.log(err);
   res.status(statusCode).json({
     message: err.message,
     stack: config.isDev && err.stack,
+    path: err.path || undefined,
     errors: err.errors || undefined,
   });
 }
@@ -46,7 +50,13 @@ async function protect(req, res, next) {
 
     const payload = await verifyToken(token);
 
-    req.user = payload.sub;
+    const user = await req.User.query().findById(payload.sub);
+    if (user == null) {
+      res.status(401);
+      return next(new Error(errorMessages.notAuthenticated));
+    }
+
+    req.user = user;
 
     next();
   } catch (error) {
@@ -57,6 +67,7 @@ async function protect(req, res, next) {
 
 function addDBModelsToRequest(req, res, next) {
   req.User = User;
+  req.Book = Book;
   next();
 }
 

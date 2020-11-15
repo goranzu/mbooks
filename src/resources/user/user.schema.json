@@ -36,6 +36,11 @@
       "$id": "#/properties/updated_at",
       "type": "string",
       "title": "The date the user was updated"
+    },
+    "last_login": {
+      "$id": "#/properties/last_login",
+      "type": "string",
+      "title": "The date the user logged in the last time"
     }
   },
   "additionalProperties": false

@@ -68,6 +68,10 @@ async function signin(req, res, next) {
 
     delete user.password;
 
+    await req.User.query()
+      .findById(user.id)
+      .patch({ last_login: new Date().toISOString() });
+
     const accessToken = await jwtModule.signToken({
       id: user.id,
       username: user.username,

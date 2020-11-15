@@ -32,7 +32,7 @@ app.get("/me", middlewares.protect, (req, res) => {
 });
 
 app.use("/api/v1/search", searchRouter);
-app.use("/api/v1/book", bookRouter);
+app.use("/api/v1/book", middlewares.protect, bookRouter);
 
 app.use(middlewares.notFound);
 
