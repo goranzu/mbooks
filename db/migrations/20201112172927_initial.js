@@ -51,11 +51,16 @@ exports.up = async function (knex) {
       .inTable("book")
       .onDelete("cascade");
     table
-      .enum("status", ["is_reading", "finished", "stopped_reading"])
+      .enum("status", [
+        "plans_to_read",
+        "is_reading",
+        "has_read",
+        "stopped_reading",
+      ])
       .notNullable()
       .defaultTo("is_reading");
     table.primary(["user_id", "book_id", "status"]);
-    // table.timestamps(false, true);
+    table.timestamps(false, true);
     // addDefaultColumns(table);
   });
 };
