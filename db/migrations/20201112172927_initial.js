@@ -17,9 +17,8 @@ exports.up = async function (knex) {
       table.string("username").notNullable();
       table.string("password", 120).notNullable();
       table.datetime("last_login");
-      table.timestamps(false, true);
 
-      // addDefaultColumns(table);
+      addDefaultColumns(table);
     }),
 
     await knex.schema.createTable(tableNames.book, (table) => {
@@ -31,7 +30,7 @@ exports.up = async function (knex) {
       table.string("image_url", 2000);
       table.string("average_rating");
       table.string("publication_year", 4);
-      // addDefaultColumns(table);
+      addDefaultColumns(table);
     }),
   ]);
 
@@ -60,8 +59,7 @@ exports.up = async function (knex) {
       .notNullable()
       .defaultTo("is_reading");
     table.primary(["user_id", "book_id", "status"]);
-    table.timestamps(false, true);
-    // addDefaultColumns(table);
+    addDefaultColumns(table);
   });
 };
 

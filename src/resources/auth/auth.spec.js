@@ -43,7 +43,7 @@ describe("User Signup", () => {
       .post("/auth/signup")
       .send(user)
       .expect(403);
-    expect(body.message).toBe(errorMessages.emailRegisterd);
+    expect(body.message).toBe(errorMessages.duplicateResource);
   });
 
   test("should validate body for signup", async () => {

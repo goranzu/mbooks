@@ -21,7 +21,7 @@ function errorHandler(err, req, res, _next) {
   }
   if (err.name === "UniqueViolationError" || err.code === "23505") {
     statusCode = 403;
-    err.message = "Duplicate resource exists";
+    err.message = errorMessages.duplicateResource;
     err.path = req.originalUrl;
     // err.message = errorMessages.emailRegisterd;
   }

@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/me", middlewares.protect, (req, res) => {
-  return res.status(200).json({ data: { id: req.user } });
+  return res.status(200).json({ data: { id: req.user.id } });
 });
 
 app.use("/api/v1/search", searchRouter);

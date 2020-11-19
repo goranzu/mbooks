@@ -6,4 +6,5 @@ module.exports = {
   passwordLength: "Password must be atleast 4 characters long.",
   invalidEmail: "Please enter a valid email.",
   notAuthenticated: "Not Authenticated",
+  duplicateResource: "Duplicate resource exists.",
 };
