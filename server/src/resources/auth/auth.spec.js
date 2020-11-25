@@ -14,7 +14,6 @@ describe("User Signup", () => {
     await User.query().delete();
     user = {
       username: faker.internet.userName(),
-      email: faker.internet.email(),
       password: faker.internet.password(),
     };
   });
@@ -24,27 +23,28 @@ describe("User Signup", () => {
       .send(user)
       .expect(201)
       .expect("Content-Type", /json/);
-    expect(body.data.user.email).toBe(user.email);
+    expect(body.data.user.username).toBe(user.username);
     expect(body.data.user.password).toBeFalsy();
     expect(body.data.accessToken).toBeTruthy();
   });
 
   test("should insert the user in to the databse", async () => {
     await supertest(app).post("/auth/signup").send(user);
-    const userInDB = await User.query().findOne({ email: user.email });
+    const userInDB = await User.query().findOne({ username: user.username });
     expect(userInDB).toBeTruthy();
-    expect(userInDB.email).toEqual(user.email);
+    expect(userInDB.username).toEqual(user.username);
     expect(userInDB.password).not.toEqual(user.password);
   });
 
-  test("should return 403 if email is already registered", async () => {
-    await User.query().insert(user);
-    const { body } = await supertest(app)
-      .post("/auth/signup")
-      .send(user)
-      .expect(403);
-    expect(body.message).toBe(errorMessages.duplicateResource);
-  });
+  // eslint-disable-next-line jest/no-commented-out-tests
+  // test("should return 403 if email is already registered", async () => {
+  //   await User.query().insert(user);
+  //   const { body } = await supertest(app)
+  //     .post("/auth/signup")
+  //     .send(user)
+  //     .expect(403);
+  //   expect(body.message).toBe(errorMessages.duplicateResource);
+  // });
 
   test("should validate body for signup", async () => {
     const { body } = await supertest(app)
@@ -52,7 +52,7 @@ describe("User Signup", () => {
       .send({})
       .expect(403)
       .expect("Content-Type", /json/);
-    expect(body.errors).toHaveLength(3);
+    expect(body.errors).toHaveLength(2);
   });
 });
 
@@ -61,7 +61,6 @@ describe("User Signin", () => {
   beforeEach(async () => {
     await User.query().delete();
     user = {
-      email: faker.internet.email(),
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };
@@ -72,7 +71,7 @@ describe("User Signin", () => {
     await User.query().insert({ ...user, password: hash });
     const { body } = await supertest(app)
       .post("/auth/signin")
-      .send({ email: user.email, password: user.password })
+      .send({ username: user.username, password: user.password })
       .expect(201)
       .expect("Content-Type", /json/);
     expect(body.data.user.username).toBe(user.username);
@@ -80,23 +79,24 @@ describe("User Signin", () => {
     expect(body.data.accessToken).toBeTruthy();
   });
 
-  test("should 403 if email is incorrect", async () => {
-    let hash = await bcrypt.hash(user.password, 12);
-    await User.query().insert({ ...user, password: hash });
-    const { body } = await supertest(app)
-      .post("/auth/signin")
-      .send({ email: "wrong@email.com", password: user.password })
-      .expect(403)
-      .expect("Content-Type", /json/);
-    expect(body.message).toBe(errorMessages.invalidCredentials);
-  });
+  // eslint-disable-next-line jest/no-commented-out-tests
+  // test("should 403 if email is incorrect", async () => {
+  //   let hash = await bcrypt.hash(user.password, 12);
+  //   await User.query().insert({ ...user, password: hash });
+  //   const { body } = await supertest(app)
+  //     .post("/auth/signin")
+  //     .send({ email: "wrong@email.com", password: user.password })
+  //     .expect(403)
+  //     .expect("Content-Type", /json/);
+  //   expect(body.message).toBe(errorMessages.invalidCredentials);
+  // });
 
   test("should 403 if password is incorrect", async () => {
     let hash = await bcrypt.hash(user.password, 12);
     await User.query().insert({ ...user, password: hash });
     const { body } = await supertest(app)
       .post("/auth/signin")
-      .send({ email: user.email, password: "wrongpassword" })
+      .send({ username: user.username, password: "wrongpassword" })
       .expect(403)
       .expect("Content-Type", /json/);
     expect(body.message).toBe(errorMessages.invalidCredentials);
@@ -119,7 +119,7 @@ describe("Protect Middleware", () => {
   beforeEach(async () => {
     await User.query().delete();
     user = {
-      email: faker.internet.email(),
+      // email: faker.internet.email(),
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };

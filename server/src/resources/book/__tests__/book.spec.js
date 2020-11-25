@@ -9,7 +9,7 @@ const jwt = require("../../../lib/jwt");
 async function setupUser(model) {
   let u = {
     username: "test",
-    email: "test@test.com",
+    // email: "test@test.com",
     password: "testing",
   };
   const hash = await bcrypt.hash(u.password, 12);
