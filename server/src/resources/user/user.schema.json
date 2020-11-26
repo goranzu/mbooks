@@ -3,18 +3,12 @@
   "type": "object",
   "title": "User",
   "description": "User",
-  "required": ["email", "username", "password"],
+  "required": ["username", "password"],
   "properties": {
     "id": {
       "$id": "#/properties/id",
       "type": "integer",
       "title": "Users id"
-    },
-    "email": {
-      "$id": "#/properties/email",
-      "type": "string",
-      "title": "Users email. Must be unique",
-      "examples": ["Mckayla.Harber87@hotmail.com"]
     },
     "username": {
       "$id": "#/properties/username",

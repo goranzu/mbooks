@@ -3,10 +3,9 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
-function signToken({ id, username, email }) {
+function signToken({ id, username }) {
   const payload = {
     sub: id,
-    email,
     username,
   };
   return new Promise((resolve, reject) => {

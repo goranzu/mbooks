@@ -7,17 +7,13 @@ const errorMessages = require("../../constants/errorMessages");
 
 const schemaSignup = yup.object().shape({
   username: yup.string().trim().min(2).max(100).required(),
-  email: yup.string().trim().email().required(),
   password: yup.string().min(4).max(100).required(),
 });
 
 async function signup(req, res, next) {
-  const { password, username, email } = req.body;
+  const { password, username } = req.body;
   try {
-    await schemaSignup.validate(
-      { username, email, password },
-      { abortEarly: false },
-    );
+    await schemaSignup.validate({ username, password }, { abortEarly: false });
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await req.User.query().insert({
       ...req.body,
@@ -41,18 +37,18 @@ async function signup(req, res, next) {
 }
 
 const schemaSignin = yup.object().shape({
-  email: yup.string().trim().email().required(),
+  username: yup.string().trim().min(2).max(100).required(),
   password: yup.string().min(4).max(100).required(),
 });
 
 async function signin(req, res, next) {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   try {
-    await schemaSignin.validate({ email, password }, { abortEarly: false });
+    await schemaSignin.validate({ username, password }, { abortEarly: false });
 
     const user = await req.User.query()
-      .findOne({ email })
-      .select("id", "username", "email", "password")
+      .findOne({ username })
+      .select("id", "username", "password")
       .where("deleted_at", null);
 
     if (user == null) {
@@ -75,7 +71,6 @@ async function signin(req, res, next) {
     const accessToken = await jwtModule.signToken({
       id: user.id,
       username: user.username,
-      email: user.email,
     });
 
     return res.status(201).json({ data: { user, accessToken } });

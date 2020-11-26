@@ -13,7 +13,6 @@ exports.up = async function (knex) {
   await Promise.all([
     await knex.schema.createTable(tableNames.user, (table) => {
       table.increments().notNullable();
-      table.string("email", 254).notNullable().unique();
       table.string("username").notNullable();
       table.string("password", 120).notNullable();
       table.datetime("last_login");
