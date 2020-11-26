@@ -76,3 +76,7 @@ button {
   align-items: center;
   justify-content: space-between;
 }
+
+main {
+  padding-top: 1.5em;
+}

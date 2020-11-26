@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import Search from "./pages/Search";
+import Search from "./pages/search/Search";
 
 function App() {
   return (
