@@ -1,0 +1,49 @@
+.nav_container {
+  margin-top: 1em;
+  background-color: var(--nav-background);
+  width: 95%;
+  border-radius: var(--border-radius);
+  padding: 1.5em 1em;
+}
+
+.close_nav {
+  width: 2em;
+  height: 2em;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  cursor: pointer;
+}
+
+.close_nav span {
+  width: 2em;
+  height: 0.25em;
+  background-color: black;
+  transform-origin: 5px;
+  border-radius: var(--border-radius);
+}
+
+.close_nav span:first-child {
+  transform: rotate(45deg);
+}
+
+.close_nav span:last-child {
+  transform: rotate(-45deg);
+}
+
+.nav_top {
+  padding: 0 0 0.5em 0;
+  border-bottom: 1px solid var(--gray);
+}
+
+.nav {
+  margin-top: 0.5em;
+}
+
+.nav ul {
+  list-style-type: none;
+}
+
+.nav ul * + * {
+  margin-top: 1em;
+}
