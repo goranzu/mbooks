@@ -4,14 +4,14 @@ import Modal from "../modal/Modal";
 import Navigation from "../navigation/Navigation";
 
 function Layout({ children }) {
-  const [showNavigation, setShowNavigation] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <Header setShowNavigation={setShowNavigation} />
-      {showNavigation ? (
-        <Modal>
-          <Navigation setShowNavigation={setShowNavigation} />
+      <Header setShowModal={setShowModal} />
+      {showModal ? (
+        <Modal setShowModal={setShowModal}>
+          <Navigation />
         </Modal>
       ) : null}
       <main>{children}</main>

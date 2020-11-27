@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./header.module.css";
 
-function Header({ setShowNavigation }) {
+function Header({ setShowModal }) {
   return (
     <header className={styles.header}>
       <div className="container row">
@@ -9,7 +9,7 @@ function Header({ setShowNavigation }) {
           aria-label="toggle navigation menu"
           role="button"
           className={styles.open_nav_button}
-          onClick={() => setShowNavigation(true)}
+          onClick={() => setShowModal(true)}
         >
           <span></span>
           <span></span>

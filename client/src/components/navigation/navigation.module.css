@@ -13,13 +13,17 @@
   flex-flow: column nowrap;
   justify-content: space-around;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
 }
 
 .close_nav span {
   width: 2em;
   height: 0.25em;
   background-color: black;
-  transform-origin: 5px;
+  transform-origin: 15px;
   border-radius: var(--border-radius);
 }
 

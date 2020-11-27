@@ -1,31 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { modalContext } from "../modal/Modal";
 import styles from "./navigation.module.css";
 
-function Navigation({ setShowNavigation }) {
+function Navigation() {
+  const { setShowModal } = useContext(modalContext);
   return (
     <div className={styles.nav_container}>
       <div className={`row ${styles.nav_top}`}>
         <h2>MBooks</h2>
-        <div
+        <button
           aria-label="close navigation"
           className={styles.close_nav}
-          onClick={() => setShowNavigation(false)}
+          onClick={() => setShowModal(false)}
         >
           <span></span>
           <span></span>
-        </div>
+        </button>
       </div>
       <nav className={styles.nav}>
         <ul>
-          <li onClick={() => setShowNavigation(false)}>
-            <Link to="/search">Search</Link>
+          <li>
+            <Link onClick={() => setShowModal(false)} to="/search">
+              Search
+            </Link>
           </li>
-          <li onClick={() => setShowNavigation(false)}>
-            <Link to="/list">Reading List</Link>
+          <li>
+            <Link onClick={() => setShowModal(false)} to="/list">
+              Reading List
+            </Link>
           </li>
-          <li onClick={() => setShowNavigation(false)}>
-            <Link to="/finished">Finished Reading</Link>
+          <li>
+            <Link onClick={() => setShowModal(false)} to="/finished">
+              Finished Reading
+            </Link>
           </li>
         </ul>
       </nav>
