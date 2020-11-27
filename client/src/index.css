@@ -12,9 +12,11 @@
   --white: #fff;
   --background-color: var(--gray);
   --header-background-color: var(--white);
+  --card-background-color: var(--white);
   --nav-background: var(--white);
   --base-font-size: 1.125rem;
   --border-radius: 5px;
+  --box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
 }
 
 body {
@@ -82,4 +84,10 @@ button {
 
 main {
   padding-top: 1.5em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
 }

@@ -38,7 +38,6 @@ function Modal({ children, setShowModal }) {
   });
 
   // HandleTabKey closes over focusElementIndex
-
   let focusElementIndex = 0;
 
   function handleTabKey(e) {
@@ -47,16 +46,21 @@ function Modal({ children, setShowModal }) {
     );
 
     if (!e.shiftKey) {
+      focusAbleElements[focusElementIndex].style.outline = "none";
       focusElementIndex = (focusElementIndex + 1) % focusAbleElements.length;
       focusAbleElements[focusElementIndex].focus();
+      focusAbleElements[focusElementIndex].style.outline = "1px solid black";
       e.preventDefault();
     }
 
     if (e.shiftKey) {
+      focusAbleElements[focusElementIndex].style.outline = "none";
       focusElementIndex =
         (focusElementIndex - 1 + focusAbleElements.length) %
         focusAbleElements.length;
       focusAbleElements[focusElementIndex].focus();
+      focusAbleElements[focusElementIndex].style.outline = "1px solid black";
+
       e.preventDefault();
     }
   }

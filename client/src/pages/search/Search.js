@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ResultCard from "../../components/result-card/ResultCard";
 import styles from "./search.module.css";
 
 const url = `${process.env.REACT_APP_API_URL}/api/v1/search`;
@@ -34,15 +35,7 @@ function Search() {
       <ul className={styles.results}>
         {isLoading && <p>Loading...</p>}
         {books.length > 0
-          ? books.map((book) => (
-              <li key={book.goodreads_id}>
-                <div>
-                  <p>{book.title}</p>
-                  <p>{book.author}</p>
-                  <img src={book.image_url} alt={`Cover for ${book.title}`} />
-                </div>
-              </li>
-            ))
+          ? books.map((book) => <ResultCard book={book} />)
           : null}
       </ul>
     </section>
