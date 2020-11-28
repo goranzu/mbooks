@@ -14,9 +14,11 @@
   --header-background-color: var(--white);
   --card-background-color: var(--white);
   --nav-background: var(--white);
+  --modal-inner-background-color: var(--white);
   --base-font-size: 1.125rem;
   --border-radius: 5px;
   --box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+  --input-padding: 0.25em;
 }
 
 body {
@@ -51,6 +53,10 @@ button {
   color: inherit;
   font: inherit;
   letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 [hidden] {

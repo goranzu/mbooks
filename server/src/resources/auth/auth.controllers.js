@@ -4,6 +4,7 @@ const yup = require("yup");
 const bcrypt = require("bcrypt");
 const jwtModule = require("../../lib/jwt");
 const errorMessages = require("../../constants/errorMessages");
+const jwtDecode = require("jwt-decode");
 
 const schemaSignup = yup.object().shape({
   username: yup.string().trim().min(2).max(100).required(),
@@ -25,11 +26,13 @@ async function signup(req, res, next) {
     const accessToken = await jwtModule.signToken({
       id: user.id,
       username: user.username,
-      email: user.email,
     });
 
+    const decodedToken = jwtDecode(accessToken);
+    const expiresAt = decodedToken.exp;
+
     return res.status(201).json({
-      data: { user, accessToken },
+      data: { user, accessToken, expiresAt },
     });
   } catch (error) {
     next(error);
@@ -73,7 +76,10 @@ async function signin(req, res, next) {
       username: user.username,
     });
 
-    return res.status(201).json({ data: { user, accessToken } });
+    const decodedToken = jwtDecode(accessToken);
+    const expiresAt = decodedToken.exp;
+
+    return res.status(201).json({ data: { user, accessToken, expiresAt } });
   } catch (error) {
     next(error);
   }

@@ -1,11 +1,11 @@
 import { createContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import FocusLock from "react-focus-lock";
 
 export const modalContext = createContext();
 
 function Modal({ children, setShowModal }) {
   const elRef = useRef(null);
-
   if (!elRef.current) {
     const div = document.createElement("div");
     div.classList.add("modal-outer");
@@ -21,10 +21,7 @@ function Modal({ children, setShowModal }) {
     return () => modalRoot.removeChild(elRef.current);
   }, []);
 
-  const keyListenersMap = new Map([
-    ["Escape", () => setShowModal(false)],
-    ["Tab", handleTabKey],
-  ]);
+  const keyListenersMap = new Map([["Escape", () => setShowModal(false)]]);
 
   useEffect(() => {
     function keyListener(e) {
@@ -37,37 +34,9 @@ function Modal({ children, setShowModal }) {
     return () => document.removeEventListener("keydown", keyListener);
   });
 
-  // HandleTabKey closes over focusElementIndex
-  let focusElementIndex = 0;
-
-  function handleTabKey(e) {
-    const focusAbleElements = elRef.current.querySelectorAll(
-      `a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox], select`,
-    );
-
-    focusAbleElements.forEach((el) => el.classList.remove("focused"));
-
-    if (!e.shiftKey) {
-      focusElementIndex = (focusElementIndex + 1) % focusAbleElements.length;
-      focusAbleElements[focusElementIndex].focus();
-      focusAbleElements[focusElementIndex].classList.add("focused");
-      e.preventDefault();
-    }
-
-    if (e.shiftKey) {
-      focusElementIndex =
-        (focusElementIndex - 1 + focusAbleElements.length) %
-        focusAbleElements.length;
-      focusAbleElements[focusElementIndex].focus();
-      focusAbleElements[focusElementIndex].classList.add("focused");
-
-      e.preventDefault();
-    }
-  }
-
   return createPortal(
     <modalContext.Provider value={{ setShowModal }}>
-      {children}
+      <FocusLock group="modal">{children}</FocusLock>
     </modalContext.Provider>,
     elRef.current,
   );

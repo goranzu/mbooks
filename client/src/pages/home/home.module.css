@@ -1,0 +1,68 @@
+.content {
+}
+
+.logo {
+}
+
+.signin {
+}
+
+.signup {
+}
+
+.container {
+  padding-top: 0;
+  height: 100vh;
+  width: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.modal_inner {
+  background-color: var(--modal-inner-background-color);
+  padding: 1em;
+  margin-top: 5em;
+  max-width: 400px;
+  width: 70vw;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  position: relative;
+}
+
+.modal_inner > button {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+
+.modal_inner h3 {
+  text-align: center;
+}
+
+.form > * {
+  display: block;
+}
+
+.form > * + * {
+  margin-top: 0.2em;
+}
+
+.form label {
+  margin-top: 0.5em;
+}
+
+.form input {
+  padding: var(--input-padding);
+  border-radius: var(--border-radius);
+  border: 1px solid black;
+  width: 100%;
+}
+
+.form button {
+  margin-top: 1em;
+  padding: 0.5em 1em;
+  border-radius: var(--border-radius);
+  border: 1px solid black;
+}

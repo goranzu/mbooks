@@ -1,45 +1,62 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import Layout from "./components/layout/Layout";
+import { AuthContext } from "./context/auth";
+import Home from "./pages/home/Home";
 import Search from "./pages/search/Search";
+
+function PrivateRoute({ children, ...rest }) {
+  const { isAuth } = useContext(AuthContext);
+  return (
+    <Route
+      {...rest}
+      render={() => (isAuth() ? children : <Redirect to="/" />)}
+    />
+  );
+}
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Switch>
-          <Route path="/search">
-            <Search />
-          </Route>
-          <Route path="/list">
-            {() => (
-              <div>
-                <h1>Reading List Page</h1>
-              </div>
-            )}
-          </Route>
-          <Route path="/finished">
-            {() => (
-              <div>
-                <h1>Finished Reading Page</h1>
-              </div>
-            )}
-          </Route>
-          <Route exact path="/">
-            {() => (
-              <div>
-                <h1>Landing Page</h1>
-              </div>
-            )}
-          </Route>
-          <Route>
-            {() => (
-              <div>
-                <h1>404 Page</h1>
-              </div>
-            )}
-          </Route>
-        </Switch>
-      </Layout>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Layout>
+          <Switch>
+            <PrivateRoute path="/search">
+              <Search />
+            </PrivateRoute>
+            <Route path="/list">
+              {() => (
+                <div>
+                  <h1>Reading List Page</h1>
+                </div>
+              )}
+            </Route>
+            <Route path="/finished">
+              {() => (
+                <div>
+                  <h1>Finished Reading Page</h1>
+                </div>
+              )}
+            </Route>
+
+            <Route>
+              {() => (
+                <div>
+                  <h1>404 Page</h1>
+                </div>
+              )}
+            </Route>
+          </Switch>
+        </Layout>
+      </Switch>
     </Router>
   );
 }

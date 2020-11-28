@@ -24,7 +24,7 @@
 .form input {
   border-radius: 10px;
   border: 1px solid black;
-  padding: 0.25em;
+  padding: var(--input-padding);
   width: 100%;
 }
 
