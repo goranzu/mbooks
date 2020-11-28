@@ -91,3 +91,7 @@ img {
   max-width: 100%;
   max-height: 100%;
 }
+
+.focused {
+  outline: 1px solid black;
+}

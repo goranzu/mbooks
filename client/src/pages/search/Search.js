@@ -35,7 +35,9 @@ function Search() {
       <ul className={styles.results}>
         {isLoading && <p>Loading...</p>}
         {books.length > 0
-          ? books.map((book) => <ResultCard book={book} />)
+          ? books.map((book) => (
+              <ResultCard key={book.goodreads_id} book={book} />
+            ))
           : null}
       </ul>
     </section>

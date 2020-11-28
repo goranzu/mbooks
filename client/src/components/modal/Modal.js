@@ -45,21 +45,21 @@ function Modal({ children, setShowModal }) {
       `a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox], select`,
     );
 
+    focusAbleElements.forEach((el) => el.classList.remove("focused"));
+
     if (!e.shiftKey) {
-      focusAbleElements[focusElementIndex].style.outline = "none";
       focusElementIndex = (focusElementIndex + 1) % focusAbleElements.length;
       focusAbleElements[focusElementIndex].focus();
-      focusAbleElements[focusElementIndex].style.outline = "1px solid black";
+      focusAbleElements[focusElementIndex].classList.add("focused");
       e.preventDefault();
     }
 
     if (e.shiftKey) {
-      focusAbleElements[focusElementIndex].style.outline = "none";
       focusElementIndex =
         (focusElementIndex - 1 + focusAbleElements.length) %
         focusAbleElements.length;
       focusAbleElements[focusElementIndex].focus();
-      focusAbleElements[focusElementIndex].style.outline = "1px solid black";
+      focusAbleElements[focusElementIndex].classList.add("focused");
 
       e.preventDefault();
     }
