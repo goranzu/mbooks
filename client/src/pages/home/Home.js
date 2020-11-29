@@ -1,107 +1,80 @@
 import React, { useState, useContext } from "react";
-import CloseButton from "../../components/close-btn/CloseButton";
+import { Redirect } from "react-router-dom";
+import AuthForm from "../../components/auth-form/AuthForm,";
 import Modal from "../../components/modal/Modal";
 import { AuthContext } from "../../context/auth";
 import styles from "./home.module.css";
-import FocusLock from "react-focus-lock";
 
 function Home() {
   const [showSignUpModal, setShowSignupModal] = useState(false);
   const [showSigninModal, setShowSigninModal] = useState(false);
+  const [errors, setErrors] = useState(null);
+  const [redirect, setRedirect] = useState(false);
   const { signin, signup } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+
+  async function handleSignup(e) {
+    const err = await signup(e);
+    if (!err) {
+      return setRedirect(true);
+    }
+
+    setErrors(err);
+  }
+
+  async function handleSignin(e) {
+    const err = await signin(e);
+    if (!err) {
+      return setRedirect(true);
+    }
+
+    setErrors(err);
+  }
+
+  function formatErrors() {
+    if (errors.errors?.length > 0) {
+      return [...errors.errors].map((err, index) => <p key={index}>{err}</p>);
+    }
+
+    return <p>{errors.message}</p>;
+  }
 
   return (
-    <main className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.logo}>MBooks</div>
-        <button
-          onClick={() => setShowSigninModal(true)}
-          className={styles.signin}
-        >
-          Signin
-        </button>
-        <button
-          onClick={() => setShowSignupModal(true)}
-          className={styles.signup}
-        >
-          Signup
-        </button>
-      </div>
-      {showSignUpModal ? (
-        <FocusLock group="modal">
+    <>
+      {redirect && <Redirect to="/search" />}
+      <main className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.logo}>MBooks</div>
+          <button
+            onClick={() => setShowSigninModal(true)}
+            className={styles.signin}
+          >
+            Signin
+          </button>
+          <button
+            onClick={() => setShowSignupModal(true)}
+            className={styles.signup}
+          >
+            Signup
+          </button>
+        </div>
+        {showSignUpModal ? (
           <Modal setShowModal={setShowSignupModal}>
             <div className={styles.modal_inner}>
-              <CloseButton onClick={() => setShowSignupModal(false)} />
-              <h3>Signup</h3>
-              <form
-                onSubmit={(e) => {
-                  signup(e);
-                }}
-                className={styles.form}
-              >
-                <label htmlFor="username">Username</label>
-                <input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  type="text"
-                  name="username"
-                  id="username"
-                  required
-                />
-                <label htmlFor="password">Password</label>
-                <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  name="password"
-                  id="password"
-                  required
-                />
-                <button type="submit">Signup</button>
-              </form>
+              <AuthForm handleSubmit={handleSignup} title="Signup" />
+              {errors && formatErrors()}
             </div>
           </Modal>
-        </FocusLock>
-      ) : null}
-      {showSigninModal ? (
-        <FocusLock group="modal">
+        ) : null}
+        {showSigninModal ? (
           <Modal setShowModal={setShowSigninModal}>
             <div className={styles.modal_inner}>
-              <CloseButton onClick={() => setShowSigninModal(false)} />
-              <h3>Signin</h3>
-              <form
-                onSubmit={(e) => {
-                  signin(e);
-                }}
-                className={styles.form}
-              >
-                <label htmlFor="username">Username</label>
-                <input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  type="text"
-                  name="username"
-                  id="username"
-                  required
-                />
-                <label htmlFor="password">Password</label>
-                <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  name="password"
-                  id="password"
-                  required
-                />
-                <button type="submit">Signin</button>
-              </form>
+              <AuthForm handleSubmit={handleSignin} title="Signin" />
+              {errors && formatErrors()}
             </div>
           </Modal>
-        </FocusLock>
-      ) : null}
-    </main>
+        ) : null}
+      </main>
+    </>
   );
 }
 

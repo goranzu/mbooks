@@ -1,23 +1,11 @@
-.content {
-}
-
-.logo {
-}
-
-.signin {
-}
-
-.signup {
-}
-
 .container {
   padding-top: 0;
-  height: 100vh;
-  width: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  height: 100vh;
+  width: 100vw;
 }
 
 .modal_inner {
@@ -39,30 +27,4 @@
 
 .modal_inner h3 {
   text-align: center;
-}
-
-.form > * {
-  display: block;
-}
-
-.form > * + * {
-  margin-top: 0.2em;
-}
-
-.form label {
-  margin-top: 0.5em;
-}
-
-.form input {
-  padding: var(--input-padding);
-  border-radius: var(--border-radius);
-  border: 1px solid black;
-  width: 100%;
-}
-
-.form button {
-  margin-top: 1em;
-  padding: 0.5em 1em;
-  border-radius: var(--border-radius);
-  border: 1px solid black;
 }

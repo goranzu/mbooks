@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 export const AuthContext = createContext();
 
@@ -10,12 +10,7 @@ function client(url, body) {
     },
     body: JSON.stringify(body),
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    } else {
-      console.log(res.status);
-      throw new Error(res.status);
-    }
+    return res.json();
   });
 }
 
@@ -48,10 +43,12 @@ function AuthProvider({ children }) {
       username: e.target.username.value,
       password: e.target.password.value,
     };
-    let response;
     try {
-      response = await client(signinUrl, payload);
-      saveAuthDataInLocalstrorage(response.data);
+      let response = await client(signinUrl, payload);
+      if (response.data?.accessToken) {
+        return saveAuthDataInLocalstrorage(response.data);
+      }
+      return response;
     } catch (error) {
       console.log(error);
     }
@@ -68,6 +65,10 @@ function AuthProvider({ children }) {
     try {
       response = await client(signupUrl, payload);
       saveAuthDataInLocalstrorage(response.data);
+      if (response.data?.accessToken) {
+        return saveAuthDataInLocalstrorage(response.data);
+      }
+      return response;
     } catch (error) {
       console.log(error);
     }
