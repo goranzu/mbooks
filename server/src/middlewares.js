@@ -21,13 +21,13 @@ function errorHandler(err, req, res, _next) {
   }
   if (err.name === "UniqueViolationError" || err.code === "23505") {
     statusCode = 403;
-    err.message = errorMessages.duplicateResource;
+    err.message = [errorMessages.duplicateResource];
     err.path = req.originalUrl;
     // err.message = errorMessages.emailRegisterd;
   }
   // console.log(err);
   res.status(statusCode).json({
-    message: err.message,
+    message: [err.message],
     stack: config.isDev && err.stack,
     path: err.path || undefined,
     errors: err.errors || undefined,

@@ -2,80 +2,56 @@ import { createContext, useState } from "react";
 
 export const AuthContext = createContext();
 
-function client(url, body) {
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  }).then((res) => {
-    return res.json();
-  });
-}
-
 function AuthProvider({ children }) {
-  const url = process.env.REACT_APP_API_URL;
-  const AUTH_CONSTANT = "auth";
+  const TOKEN = "token";
+  const EXPIREST_AT = "expiresAt";
+  const USER = "user";
 
-  function saveAuthDataInLocalstrorage(data) {
-    localStorage.setItem(AUTH_CONSTANT, JSON.stringify(data));
-  }
+  const token = localStorage.getItem(TOKEN);
+  const expiresAt = localStorage.getItem(EXPIREST_AT);
+  const user = localStorage.getItem(USER);
 
-  function getAuthDataFromLocalstorage() {
-    return JSON.parse(localStorage.getItem(AUTH_CONSTANT) || {});
+  const [authState, setAuthState] = useState({
+    user: user ? JSON.parse(user) : {},
+    token: token,
+    expiresAt: expiresAt,
+  });
+
+  function setAuthInfo({ token, user, expiresAt }) {
+    setAuthState({ token, user, expiresAt });
+    localStorage.setItem(TOKEN, token);
+    localStorage.setItem(EXPIREST_AT, expiresAt);
+    localStorage.setItem(USER, JSON.stringify(user));
   }
 
   function isAuth() {
-    const data = getAuthDataFromLocalstorage();
-    // Unix Timestamp
-    if (data.expiresAt > Date.now() / 1000) {
-      return true;
-    } else {
+    if (!authState.token || !authState.expiresAt) {
       return false;
     }
+
+    return authState.expiresAt > new Date().getTime() / 1000;
   }
 
-  async function signin(e) {
-    e.preventDefault();
-    const signinUrl = url + "/auth/signin";
-    const payload = {
-      username: e.target.username.value,
-      password: e.target.password.value,
-    };
-    try {
-      let response = await client(signinUrl, payload);
-      if (response.data?.accessToken) {
-        return saveAuthDataInLocalstrorage(response.data);
-      }
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function signup(e) {
-    e.preventDefault();
-    const signupUrl = url + "/auth/signup";
-    const payload = {
-      username: e.target.username.value,
-      password: e.target.password.value,
-    };
-    let response;
-    try {
-      response = await client(signupUrl, payload);
-      saveAuthDataInLocalstrorage(response.data);
-      if (response.data?.accessToken) {
-        return saveAuthDataInLocalstrorage(response.data);
-      }
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
+  function logout() {
+    localStorage.removeItem(TOKEN);
+    localStorage.removeItem(USER);
+    localStorage.removeItem(EXPIREST_AT);
+    setAuthState({
+      token: null,
+      expiresAt: null,
+      user: {},
+    });
   }
 
   return (
-    <AuthContext.Provider value={{ signin, signup, isAuth }}>
+    <AuthContext.Provider
+      value={{
+        isAuth,
+        setAuthState: (authInfo) => setAuthInfo(authInfo),
+        authState,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

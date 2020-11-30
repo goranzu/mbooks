@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../context/auth";
 import styles from "./header.module.css";
 
 function Header({ setShowModal }) {
+  const authContext = useContext(AuthContext);
   return (
     <header className={styles.header}>
       <div className="container row">
@@ -19,7 +21,8 @@ function Header({ setShowModal }) {
           <h3>MBooks</h3>
         </div>
         <div className={styles.profile}>
-          <p>Liam</p>
+          <button onClick={authContext.logout}>Logout</button>
+          <p>{authContext.authState.user.username}</p>
         </div>
       </div>
     </header>

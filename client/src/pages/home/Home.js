@@ -1,41 +1,72 @@
 import React, { useState, useContext } from "react";
+import axios from "axios";
 import { Redirect } from "react-router-dom";
 import AuthForm from "../../components/auth-form/AuthForm,";
 import Modal from "../../components/modal/Modal";
 import { AuthContext } from "../../context/auth";
 import styles from "./home.module.css";
 
+function publicApiClient(url, credentials) {
+  return axios.post(url, credentials);
+}
+
 function Home() {
+  const [signinUsername, setSigninUsername] = useState("");
+  const [signinPassword, setSigninPassword] = useState("");
+
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+
   const [showSignUpModal, setShowSignupModal] = useState(false);
   const [showSigninModal, setShowSigninModal] = useState(false);
-  const [errors, setErrors] = useState(null);
+
+  const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
-  const { signin, signup } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
 
   async function handleSignup(e) {
-    const err = await signup(e);
-    if (!err) {
-      return setRedirect(true);
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const {
+        data,
+      } = await publicApiClient(
+        `${process.env.REACT_APP_API_URL}/auth/signup`,
+        { username: signupUsername, password: signupPassword },
+      );
+      authContext.setAuthState(data.data);
+      setErrors([]);
+      setRedirect(true);
+    } catch (error) {
+      setLoading(false);
+      setErrors(error.response.data.message);
     }
-
-    setErrors(err);
   }
 
   async function handleSignin(e) {
-    const err = await signin(e);
-    if (!err) {
-      return setRedirect(true);
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const {
+        data,
+      } = await publicApiClient(
+        `${process.env.REACT_APP_API_URL}/auth/signin`,
+        { username: signinUsername, password: signinPassword },
+      );
+      authContext.setAuthState(data.data);
+      setErrors([]);
+      setRedirect(true);
+    } catch (error) {
+      setLoading(false);
+      setErrors(error.response.data.message);
     }
-
-    setErrors(err);
   }
 
   function formatErrors() {
-    if (errors.errors?.length > 0) {
-      return [...errors.errors].map((err, index) => <p key={index}>{err}</p>);
+    if (errors.length > 0) {
+      return errors.map((err, index) => <p key={index}>{err}</p>);
     }
-
-    return <p>{errors.message}</p>;
   }
 
   return (
@@ -60,7 +91,15 @@ function Home() {
         {showSignUpModal ? (
           <Modal setShowModal={setShowSignupModal}>
             <div className={styles.modal_inner}>
-              <AuthForm handleSubmit={handleSignup} title="Signup" />
+              <AuthForm
+                setUsername={setSignupUsername}
+                username={signupUsername}
+                password={signupPassword}
+                setPassword={setSignupPassword}
+                handleSubmit={handleSignup}
+                title="Signup"
+                disabled={loading}
+              />
               {errors && formatErrors()}
             </div>
           </Modal>
@@ -68,7 +107,15 @@ function Home() {
         {showSigninModal ? (
           <Modal setShowModal={setShowSigninModal}>
             <div className={styles.modal_inner}>
-              <AuthForm handleSubmit={handleSignin} title="Signin" />
+              <AuthForm
+                username={signinUsername}
+                setUsername={setSigninUsername}
+                password={signinPassword}
+                setPassword={setSigninPassword}
+                handleSubmit={handleSignin}
+                title="Signin"
+                disabled={loading}
+              />
               {errors && formatErrors()}
             </div>
           </Modal>

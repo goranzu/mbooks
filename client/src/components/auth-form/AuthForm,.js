@@ -1,12 +1,18 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import CloseButton from "../close-btn/CloseButton";
 import { modalContext } from "../modal/Modal";
 import styles from "./auth_form.module.css";
 
-function AuthForm({ handleSubmit, title }) {
+function AuthForm({
+  handleSubmit,
+  title,
+  username,
+  password,
+  setUsername,
+  setPassword,
+  disabled,
+}) {
   const { setShowModal } = useContext(modalContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   return (
     <>
       <CloseButton onClick={() => setShowModal(false)} />
@@ -35,7 +41,9 @@ function AuthForm({ handleSubmit, title }) {
           id="password"
           required
         />
-        <button type="submit">Signup</button>
+        <button type="submit" disabled={disabled}>
+          Signup
+        </button>
       </form>
     </>
   );

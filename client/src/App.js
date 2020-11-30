@@ -32,21 +32,16 @@ function App() {
             <PrivateRoute path="/search">
               <Search />
             </PrivateRoute>
-            <Route path="/list">
-              {() => (
-                <div>
-                  <h1>Reading List Page</h1>
-                </div>
-              )}
-            </Route>
-            <Route path="/finished">
-              {() => (
-                <div>
-                  <h1>Finished Reading Page</h1>
-                </div>
-              )}
-            </Route>
-
+            <PrivateRoute path="/list">
+              <div>
+                <h1>Reading List Page</h1>
+              </div>
+            </PrivateRoute>
+            <PrivateRoute path="/finished">
+              <div>
+                <h1>Finished Reading Page</h1>
+              </div>
+            </PrivateRoute>
             <Route>
               {() => (
                 <div>

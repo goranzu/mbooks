@@ -23,16 +23,16 @@ async function signup(req, res, next) {
 
     delete user.password;
 
-    const accessToken = await jwtModule.signToken({
+    const token = await jwtModule.signToken({
       id: user.id,
       username: user.username,
     });
 
-    const decodedToken = jwtDecode(accessToken);
+    const decodedToken = jwtDecode(token);
     const expiresAt = decodedToken.exp;
 
     return res.status(201).json({
-      data: { user, accessToken, expiresAt },
+      data: { user, token, expiresAt },
     });
   } catch (error) {
     next(error);
@@ -71,15 +71,15 @@ async function signin(req, res, next) {
       .findById(user.id)
       .patch({ last_login: new Date().toISOString() });
 
-    const accessToken = await jwtModule.signToken({
+    const token = await jwtModule.signToken({
       id: user.id,
       username: user.username,
     });
 
-    const decodedToken = jwtDecode(accessToken);
+    const decodedToken = jwtDecode(token);
     const expiresAt = decodedToken.exp;
 
-    return res.status(201).json({ data: { user, accessToken, expiresAt } });
+    return res.status(201).json({ data: { user, token, expiresAt } });
   } catch (error) {
     next(error);
   }
