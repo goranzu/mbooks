@@ -10,8 +10,6 @@ function FetchProvider({ children }) {
     baseURL: process.env.REACT_APP_API_URL,
   });
 
-  console.log(authContext.authState.token);
-
   tokenAxios.interceptors.request.use(
     (config) => {
       config.headers.Authorization = `Bearer ${authContext.authState.token}`;
