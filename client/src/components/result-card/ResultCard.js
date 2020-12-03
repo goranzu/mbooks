@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useMutation } from "react-query";
+import { FetchContext } from "../../context/fetch";
 import styles from "./resultCard.module.css";
 
 function ResultCard({ book }) {
+  const fetchContext = useContext(FetchContext);
+
+  const [addBook, { status, error }] = useMutation((book) =>
+    fetchContext.authClient.post(`api/v1/book`, book),
+  );
+
+  function addBookReadingList() {
+    addBook(book);
+  }
+
   return (
     <li>
       <div className={styles.card}>
@@ -13,7 +25,10 @@ function ResultCard({ book }) {
           <p className={styles.author}>
             by {book.author} &mdash; {book.publication_year}
           </p>
-          <button className={styles.list_button}>Add To List</button>
+          <button onClick={addBookReadingList} className={styles.list_button}>
+            Add To List
+          </button>
+          {status === "error" && <p>{error.response.data.message[0]}</p>}
         </div>
       </div>
     </li>

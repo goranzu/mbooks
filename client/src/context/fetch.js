@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { AuthContext } from "./auth";
 import axios from "axios";
 
-const FetchContext = createContext();
+const FetchContext = createContext({ authClient: () => Promise });
 
 function FetchProvider({ children }) {
   const authContext = useContext(AuthContext);

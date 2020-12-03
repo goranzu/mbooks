@@ -8,6 +8,7 @@ import {
 import Layout from "./components/layout/Layout";
 import { AuthContext } from "./context/auth";
 import Home from "./pages/home/Home";
+import ReadingList from "./pages/reading-list/Readinglist";
 import Search from "./pages/search/Search";
 
 function PrivateRoute({ children, ...rest }) {
@@ -33,9 +34,7 @@ function App() {
               <Search />
             </PrivateRoute>
             <PrivateRoute path="/list">
-              <div>
-                <h1>Reading List Page</h1>
-              </div>
+              <ReadingList />
             </PrivateRoute>
             <PrivateRoute path="/finished">
               <div>
