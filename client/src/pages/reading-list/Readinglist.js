@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import ResultCard from "../../components/result-card/ResultCard";
 import { FetchContext } from "../../context/fetch";
 
 function ReadingList() {
@@ -15,8 +16,6 @@ function ReadingList() {
     books = data.data.data;
   }
 
-  console.log(books);
-
   return (
     <div>
       <h1>Readinglist</h1>
@@ -26,7 +25,11 @@ function ReadingList() {
           Readinglist empty go to <Link to="/search">search</Link> to some books
         </p>
       ) : (
-        books.map((b) => <p key={b.id}>{JSON.stringify(b, null, 2)}</p>)
+        <ul>
+          {books.map((b) => (
+            <ResultCard key={b.id} book={b} />
+          ))}
+        </ul>
       )}
       {status === "error" && JSON.stringify(error.response, null, 2)}
     </div>

@@ -14,6 +14,7 @@ function notFound(req, res, next) {
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, _next) {
+  console.log(err);
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 
   if (err.name === "ValidationError") {

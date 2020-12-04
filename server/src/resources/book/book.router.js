@@ -25,6 +25,7 @@ const getListSchema = yup.object().shape({
 bookRouter
   .route("/")
   .post(async function addBookToReadingList(req, res, next) {
+    // TODO: Check if book is in db, if so add to log else add to db and to log
     try {
       await addBookToReadingListSchema.validate(
         { ...req.body },
@@ -33,7 +34,8 @@ bookRouter
       const readinglist = await req.user.$relatedQuery("book");
 
       const bookIsOnReadingList = readinglist.find(
-        (b) => b.goodreads_id === req.body.goodreads_id,
+        (b) =>
+          b.goodreads_id === req.body.goodreads_id && b.status === "is_reading",
       );
 
       if (bookIsOnReadingList) {
@@ -60,8 +62,9 @@ bookRouter
         .where({ status });
 
       if (readingList.length === 0) {
-        res.status(403);
-        return next(new Error("There is nothing on your readinglist."));
+        // res.status(200);
+        // return next(new Error("There is nothing on your readinglist."));
+        return res.status(200).json({ data: [] });
       }
 
       return res.status(200).json({ data: readingList });
