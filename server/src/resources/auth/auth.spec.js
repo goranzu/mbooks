@@ -11,12 +11,13 @@ const { signToken } = require("../../lib/jwt");
 describe("User Signup", () => {
   let user;
   beforeEach(async () => {
-    await User.query().delete();
+    await User.deleteMany();
     user = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };
   });
+
   test("should return valid response when signup is succesfull", async () => {
     const { body } = await supertest(app)
       .post("/auth/signup")
@@ -25,26 +26,26 @@ describe("User Signup", () => {
       .expect("Content-Type", /json/);
     expect(body.data.user.username).toBe(user.username);
     expect(body.data.user.password).toBeFalsy();
-    expect(body.data.accessToken).toBeTruthy();
+    expect(body.data.token).toBeTruthy();
   });
 
   test("should insert the user in to the databse", async () => {
     await supertest(app).post("/auth/signup").send(user);
-    const userInDB = await User.query().findOne({ username: user.username });
+    const userInDB = await User.findOne({ username: user.username });
     expect(userInDB).toBeTruthy();
     expect(userInDB.username).toEqual(user.username);
     expect(userInDB.password).not.toEqual(user.password);
   });
 
-  // eslint-disable-next-line jest/no-commented-out-tests
-  // test("should return 403 if email is already registered", async () => {
-  //   await User.query().insert(user);
-  //   const { body } = await supertest(app)
-  //     .post("/auth/signup")
-  //     .send(user)
-  //     .expect(403);
-  //   expect(body.message).toBe(errorMessages.duplicateResource);
-  // });
+  //   // eslint-disable-next-line jest/no-commented-out-tests
+  //   // test("should return 403 if email is already registered", async () => {
+  //   //   await User.query().insert(user);
+  //   //   const { body } = await supertest(app)
+  //   //     .post("/auth/signup")
+  //   //     .send(user)
+  //   //     .expect(403);
+  //   //   expect(body.message).toBe(errorMessages.duplicateResource);
+  //   // });
 
   test("should validate body for signup", async () => {
     const { body } = await supertest(app)
@@ -59,16 +60,14 @@ describe("User Signup", () => {
 describe("User Signin", () => {
   let user;
   beforeEach(async () => {
-    await User.query().delete();
     user = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };
   });
-
   test("should return valid response when signin is succesfull", async () => {
     let hash = await bcrypt.hash(user.password, 12);
-    await User.query().insert({ ...user, password: hash });
+    await User.create({ ...user, password: hash });
     const { body } = await supertest(app)
       .post("/auth/signin")
       .send({ username: user.username, password: user.password })
@@ -76,24 +75,22 @@ describe("User Signin", () => {
       .expect("Content-Type", /json/);
     expect(body.data.user.username).toBe(user.username);
     expect(body.data.user.password).toBeFalsy();
-    expect(body.data.accessToken).toBeTruthy();
+    expect(body.data.token).toBeTruthy();
   });
-
-  // eslint-disable-next-line jest/no-commented-out-tests
-  // test("should 403 if email is incorrect", async () => {
-  //   let hash = await bcrypt.hash(user.password, 12);
-  //   await User.query().insert({ ...user, password: hash });
-  //   const { body } = await supertest(app)
-  //     .post("/auth/signin")
-  //     .send({ email: "wrong@email.com", password: user.password })
-  //     .expect(403)
-  //     .expect("Content-Type", /json/);
-  //   expect(body.message).toBe(errorMessages.invalidCredentials);
-  // });
-
+  //   // eslint-disable-next-line jest/no-commented-out-tests
+  //   // test("should 403 if email is incorrect", async () => {
+  //   //   let hash = await bcrypt.hash(user.password, 12);
+  //   //   await User.query().insert({ ...user, password: hash });
+  //   //   const { body } = await supertest(app)
+  //   //     .post("/auth/signin")
+  //   //     .send({ email: "wrong@email.com", password: user.password })
+  //   //     .expect(403)
+  //   //     .expect("Content-Type", /json/);
+  //   //   expect(body.message).toBe(errorMessages.invalidCredentials);
+  //   // });
   test("should 403 if password is incorrect", async () => {
     let hash = await bcrypt.hash(user.password, 12);
-    await User.query().insert({ ...user, password: hash });
+    await User.create({ ...user, password: hash });
     const { body } = await supertest(app)
       .post("/auth/signin")
       .send({ username: user.username, password: "wrongpassword" })
@@ -117,16 +114,14 @@ describe("Protect Middleware", () => {
   let token;
   let userInDb;
   beforeEach(async () => {
-    await User.query().delete();
     user = {
       // email: faker.internet.email(),
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };
-    userInDb = await User.query().insert(user);
+    userInDb = await User.create(user);
     token = await signToken(userInDb);
   });
-
   test("should return 401 if no authorization token is present", async () => {
     const { body } = await supertest(app)
       .get("/me")

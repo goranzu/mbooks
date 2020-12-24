@@ -7,19 +7,24 @@ const helmet = require("helmet");
 const cors = require("cors");
 const config = require("./config");
 const middlewares = require("./middlewares");
-const { searchRouter } = require("./resources/search/search.router");
-const bookRouter = require("./resources/book/book.router");
+// const { searchRouter } = require("./resources/search/search.router");
+// const bookRouter = require("./resources/book/book.router");
 const authRouter = require("./resources/auth/auth.router");
+const connectDb = require("./db");
 
 const app = express();
 
 app.use(express.json());
 app.use(compression());
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: config.corsOrigin,
+  }),
+);
 config.isDev && app.use(morgan("dev"));
 
-app.use(middlewares.addDBModelsToRequest);
+// app.use(middlewares.addDBModelsToRequest);
 
 app.use("/auth", authRouter);
 
@@ -31,17 +36,24 @@ app.get("/me", middlewares.protect, (req, res) => {
   return res.status(200).json({ data: { id: req.user.id } });
 });
 
-app.use("/api/v1/search", middlewares.protect, searchRouter);
-app.use("/api/v1/book", middlewares.protect, bookRouter);
+// app.use("/api/v1/search", middlewares.protect, searchRouter);
+// app.use("/api/v1/book", middlewares.protect, bookRouter);
 
 app.use(middlewares.notFound);
 
 app.use(middlewares.errorHandler);
 
 function start() {
-  app.listen(config.port, () => {
-    console.log(`Listening on http://localhost:${config.port}`);
-  });
+  connectDb(config.dbUrl)
+    .then(() => {
+      app.listen(config.port, () => {
+        console.log(`Listening on http://localhost:${config.port}`);
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 }
 
 module.exports = { app, start };

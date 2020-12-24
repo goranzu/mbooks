@@ -14,7 +14,7 @@ function notFound(req, res, next) {
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, _next) {
-  console.log(err);
+  // console.log(err);
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 
   if (err.name === "ValidationError") {
@@ -22,13 +22,13 @@ function errorHandler(err, req, res, _next) {
   }
   if (err.name === "UniqueViolationError" || err.code === "23505") {
     statusCode = 403;
-    err.message = [errorMessages.duplicateResource];
+    err.message = errorMessages.duplicateResource;
     err.path = req.originalUrl;
     // err.message = errorMessages.emailRegisterd;
   }
-  // console.log(err);
+  // console.log(err.errors);
   res.status(statusCode).json({
-    message: [err.message],
+    message: err.message,
     stack: config.isDev && err.stack,
     path: err.path || undefined,
     errors: err.errors || undefined,
@@ -51,7 +51,7 @@ async function protect(req, res, next) {
 
     const payload = await verifyToken(token);
 
-    const user = await req.User.query().findById(payload.sub);
+    const user = await User.findById(payload.sub);
     if (user == null) {
       res.status(401);
       return next(new Error(errorMessages.notAuthenticated));

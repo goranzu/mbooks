@@ -13,6 +13,7 @@ const baseConfig = {
     secret: process.env.JWT_SECRET,
     exp: "1d",
   },
+  corsOrigin: "http://localhost:3000",
 };
 
 let config;
@@ -30,4 +31,4 @@ switch (env) {
     config = require("./dev");
 }
 
-module.exports = merge(baseConfig, config);
+module.exports = Object.freeze(merge(baseConfig, config));
