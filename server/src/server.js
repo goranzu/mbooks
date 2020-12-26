@@ -7,7 +7,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const config = require("./config");
 const middlewares = require("./middlewares");
-// const { searchRouter } = require("./resources/search/search.router");
+const { searchRouter } = require("./resources/search/search.router");
 // const bookRouter = require("./resources/book/book.router");
 const authRouter = require("./resources/auth/auth.router");
 const connectDb = require("./db");
@@ -36,7 +36,7 @@ app.get("/me", middlewares.protect, (req, res) => {
   return res.status(200).json({ data: { id: req.user.id } });
 });
 
-// app.use("/api/v1/search", middlewares.protect, searchRouter);
+app.use("/api/v1/search", searchRouter);
 // app.use("/api/v1/book", middlewares.protect, bookRouter);
 
 app.use(middlewares.notFound);

@@ -1,41 +1,26 @@
 "use strict";
 
-"use strict";
+const mongoose = require("mongoose");
 
-const { Model } = require("objection");
-const tableNames = require("../../constants/tableNames");
-const db = require("../../db");
-const schema = require("./book.schema.json");
+const requiredString = {
+  type: String,
+  required: true,
+};
 
-class Book extends Model {
-  static get tableName() {
-    return tableNames.book;
-  }
+const bookSchema = new mongoose.Schema(
+  {
+    goodreadsId: { ...requiredString, unique: true },
+    title: requiredString,
+    author: requiredString,
+    publicationYear: requiredString,
+    averageRating: requiredString,
+    imageUrl: requiredString,
+  },
+  {
+    timestamps: true,
+  },
+);
 
-  static get jsonSchema() {
-    return schema;
-  }
-
-  static get relationMappings() {
-    const User = require("../user/user.model");
-    return {
-      user: {
-        relation: Model.ManyToManyRelation,
-        modelClass: User,
-        join: {
-          from: "book.id",
-          through: {
-            from: "user_reading_log.book_id",
-            to: "user_reading_log.user_id",
-            extra: ["status"],
-          },
-          to: "user.id",
-        },
-      },
-    };
-  }
-}
-
-Book.knex(db);
+const Book = mongoose.model("book", bookSchema);
 
 module.exports = Book;

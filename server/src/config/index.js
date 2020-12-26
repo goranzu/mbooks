@@ -14,6 +14,7 @@ const baseConfig = {
     exp: "1d",
   },
   corsOrigin: "http://localhost:3000",
+  goodreadsKey: process.env.GOODREADS_KEY,
 };
 
 let config;

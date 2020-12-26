@@ -9,8 +9,12 @@ const searchRouter = Router();
 const parser = new xml2js.Parser();
 
 async function fetchDataFromGoodreadsApi(url) {
-  const { data } = await axios.get(url);
-  return data;
+  try {
+    const { data } = await axios.get(url);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function formatTheGoodreadsResponse(d) {

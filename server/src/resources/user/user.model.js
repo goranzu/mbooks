@@ -7,6 +7,14 @@ const requiredString = {
   required: true,
 };
 
+const bookRef = [
+  {
+    type: mongoose.Schema.ObjectId,
+    ref: "book",
+    required: true,
+  },
+];
+
 const userSchema = new mongoose.Schema(
   {
     username: requiredString,
@@ -14,6 +22,8 @@ const userSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
+    readingList: bookRef,
+    finishedReading: bookRef,
   },
   {
     timestamps: true,
