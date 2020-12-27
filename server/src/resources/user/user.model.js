@@ -7,23 +7,24 @@ const requiredString = {
   required: true,
 };
 
-const bookRef = [
-  {
-    type: mongoose.Schema.ObjectId,
-    ref: "book",
-    required: true,
-  },
-];
+const bookRef = {
+  goodreadsId: { ...requiredString, unique: true },
+  title: requiredString,
+  author: requiredString,
+  publicationYear: requiredString,
+  averageRating: requiredString,
+  imageUrl: requiredString,
+};
 
 const userSchema = new mongoose.Schema(
   {
-    username: requiredString,
+    username: { ...requiredString, unique: true },
     password: requiredString,
     lastLogin: {
       type: Date,
     },
-    readingList: bookRef,
-    finishedReading: bookRef,
+    readingList: [bookRef],
+    finishedReading: [bookRef],
   },
   {
     timestamps: true,

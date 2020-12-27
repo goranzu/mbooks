@@ -8,9 +8,9 @@ const cors = require("cors");
 const config = require("./config");
 const middlewares = require("./middlewares");
 const { searchRouter } = require("./resources/search/search.router");
-// const bookRouter = require("./resources/book/book.router");
 const authRouter = require("./resources/auth/auth.router");
 const connectDb = require("./db");
+const User = require("./resources/user/user.model");
 
 const app = express();
 
@@ -33,11 +33,22 @@ app.get("/", (req, res) => {
 });
 
 app.get("/me", middlewares.protect, (req, res) => {
-  return res.status(200).json({ data: { id: req.user.id } });
+  return res.status(200).json({ data: { id: req.user._id } });
 });
 
 app.use("/api/v1/search", searchRouter);
-// app.use("/api/v1/book", middlewares.protect, bookRouter);
+
+app
+  .route("/api/v1/user/:id/readinglist")
+  .get(middlewares.protect, async function getReadingList(req, res, next) {
+    try {
+      return res
+        .status(200)
+        .json({ data: { readingList: req.user.readingList } });
+    } catch (error) {
+      next(error);
+    }
+  });
 
 app.use(middlewares.notFound);
 
