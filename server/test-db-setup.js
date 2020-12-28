@@ -17,10 +17,14 @@ global.newId = () => {
 
 const remove = (collection) =>
   new Promise((resolve, reject) => {
-    collection.remove((err) => {
-      if (err) return reject(err);
+    collection.deleteMany(null, null, (err) => {
+      if (err) reject(err);
       resolve();
     });
+    // collection.remove((err) => {
+    //   if (err) return reject(err);
+    //   resolve();
+    // });
   });
 
 beforeEach(async (done) => {
@@ -37,6 +41,8 @@ beforeEach(async (done) => {
         useNewUrlParser: true,
         autoIndex: true,
         useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
       });
       await clearDB();
       await Promise.all(Object.keys(models).map((name) => models[name].init()));

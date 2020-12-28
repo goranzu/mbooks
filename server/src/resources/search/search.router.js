@@ -25,12 +25,12 @@ function formatTheGoodreadsResponse(d) {
   const books = results.map((b) => {
     const book = b["best_book"][0];
     return {
-      goodreads_id: book?.id[0]._,
+      goodreadsId: book?.id[0]._,
       title: book.title[0],
       author: book["author"][0].name[0],
-      publication_year: b["original_publication_year"][0]._,
-      average_rating: b["average_rating"][0],
-      image_url: book["image_url"][0],
+      publicationYear: b["original_publication_year"][0]._,
+      averageRating: b["average_rating"][0],
+      imageUrl: book["image_url"][0],
     };
   });
 

@@ -11,6 +11,7 @@ const { searchRouter } = require("./resources/search/search.router");
 const authRouter = require("./resources/auth/auth.router");
 const connectDb = require("./db");
 const User = require("./resources/user/user.model");
+const handleAsync = require("./lib/handleAsync");
 
 const app = express();
 
@@ -39,16 +40,60 @@ app.get("/me", middlewares.protect, (req, res) => {
 app.use("/api/v1/search", searchRouter);
 
 app
-  .route("/api/v1/user/:id/readinglist")
-  .get(middlewares.protect, async function getReadingList(req, res, next) {
-    try {
+  .route("/api/v1/user/readinglist")
+  .get(
+    middlewares.protect,
+    handleAsync(async function getReadingList(req, res) {
       return res
         .status(200)
         .json({ data: { readingList: req.user.readingList } });
-    } catch (error) {
-      next(error);
-    }
-  });
+    }),
+  )
+  .post(
+    middlewares.protect,
+    async function addBookToReadingList(req, res, next) {
+      try {
+        const book = req.body;
+        const { readingList } = await User.findByIdAndUpdate(
+          req.user._id,
+          {
+            $push: { readingList: book },
+          },
+          { new: true },
+        )
+          .select("readingList")
+          .lean()
+          .exec();
+        return res.status(201).json({ data: { readingList } });
+      } catch (error) {
+        next(error);
+      }
+    },
+  );
+
+app
+  .route("/api/v1/user/readinglist/:bookId")
+  .delete(
+    middlewares.protect,
+    async function removeBookFromReadingList(req, res, next) {
+      try {
+        const { bookId } = req.params;
+        const { readingList } = await User.findByIdAndUpdate(
+          req.user._id,
+          {
+            $pull: { readingList: { goodreadsId: bookId } },
+          },
+          { new: true },
+        )
+          .lean()
+          .exec();
+
+        return res.status(200).json({ data: { readingList } });
+      } catch (error) {
+        next(error);
+      }
+    },
+  );
 
 app.use(middlewares.notFound);
 

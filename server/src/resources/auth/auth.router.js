@@ -1,12 +1,12 @@
 "use strict";
 
 const { Router } = require("express");
-const authControllers = require("./auth.controllers");
+const controllers = require("./controllers");
 
 const authRouter = Router();
 
-authRouter.post("/signup", authControllers.signup);
+authRouter.post("/signup", controllers.signup);
 
-authRouter.post("/signin", authControllers.signin);
+authRouter.post("/signin", controllers.signin);
 
 module.exports = authRouter;

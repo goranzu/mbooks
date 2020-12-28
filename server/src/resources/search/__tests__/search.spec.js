@@ -33,13 +33,13 @@ describe("Format the goodreads response", () => {
     const parsedResponse = await parser.parseStringPromise(xmlData);
     const books = formatTheGoodreadsResponse(parsedResponse);
     expect(books[0]).toEqual({
-      goodreads_id: "375802",
+      goodreadsId: "375802",
       title: "Ender's Game (Ender's Saga, #1)",
       author: "Orson Scott Card",
-      image_url:
+      imageUrl:
         "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1408303130l/375802._SY160_.jpg",
-      average_rating: "4.30",
-      publication_year: "1985",
+      averageRating: "4.30",
+      publicationYear: "1985",
     });
   });
 });

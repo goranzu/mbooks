@@ -11,7 +11,6 @@ const { signToken } = require("../../lib/jwt");
 describe("User Signup", () => {
   let user;
   beforeEach(async () => {
-    await User.deleteMany();
     user = {
       username: faker.internet.userName(),
       password: faker.internet.password(),

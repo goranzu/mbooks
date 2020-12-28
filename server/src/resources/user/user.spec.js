@@ -27,36 +27,78 @@ const book2 = {
     "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png",
 };
 
+function getRequest(url, token) {
+  return supertest(app).get(url).set("Authorization", `Bearer ${token}`);
+}
+
+function deleteRequest(url, token) {
+  return supertest(app).delete(url).set("Authorization", `Bearer ${token}`);
+}
+
+function postRequest(url, token, body) {
+  return supertest(app)
+    .post(url)
+    .set("Authorization", `Bearer ${token}`)
+    .send(body);
+}
+
 describe("ReadingList", () => {
   let user;
   let token;
   beforeEach(async () => {
-    await User.deleteMany();
     const u = {
       username: faker.internet.userName(),
       password: faker.internet.password(),
     };
     const hash = await bcrypt.hash(u.password, 10);
     user = await User.create({ username: u.username, password: hash });
+    user = user.toObject();
     token = await signToken({ id: user._id, username: user.username });
   });
 
   test("should return 200 when requesting readinglist", async () => {
-    const { body } = await supertest(app)
-      .get(`/api/v1/user/${user._id}/readinglist`)
-      .set("Authorization", `Bearer ${token}`)
-      .expect(200);
+    const { body } = await getRequest(`/api/v1/user/readinglist`, token).expect(
+      200,
+    );
     expect(body.data.readingList).toHaveLength(0);
   });
 
   test("should return readingList with 2 books on it", async () => {
     await User.findByIdAndUpdate(user._id, {
       $push: { readingList: { $each: [book1, book2] } },
-    });
-    const { body } = await supertest(app)
-      .get(`/api/v1/user/${user._id}/readinglist`)
-      .set("Authorization", `Bearer ${token}`)
-      .expect(200);
+    })
+      .lean()
+      .exec();
+    const { body } = await getRequest(`/api/v1/user/readinglist`, token).expect(
+      200,
+    );
     expect(body.data.readingList).toHaveLength(2);
+  });
+
+  test("should add one book to the readinglist and return the readinglist", async () => {
+    const { body } = await postRequest(
+      `/api/v1/user/readinglist`,
+      token,
+      book1,
+    ).expect(201);
+    expect(body.data.readingList).toHaveLength(1);
+  });
+
+  test("should remove one book from the readinglist", async () => {
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $push: { readingList: { $each: [book1, book2] } },
+      },
+      { new: true },
+    )
+      .lean()
+      .exec();
+    const { body } = await deleteRequest(
+      `/api/v1/user/readinglist/${book2.goodreadsId}`,
+      token,
+      book1,
+    ).expect(200);
+    expect(body.data.readingList).toHaveLength(1);
   });
 });

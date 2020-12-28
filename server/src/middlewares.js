@@ -50,7 +50,10 @@ async function protect(req, res, next) {
 
     const payload = await verifyToken(token);
 
-    const user = await User.findById(payload.sub).exec();
+    const user = await User.findById(payload.sub)
+      .select(["_id", "readingList", "finishedReading"])
+      .lean()
+      .exec();
 
     if (user == null) {
       res.status(401);
