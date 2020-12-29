@@ -57,10 +57,11 @@ describe("ReadingList", () => {
   });
 
   test("should return 200 when requesting readinglist", async () => {
-    const { body } = await getRequest(`/api/v1/user/readinglist`, token).expect(
-      200,
-    );
-    expect(body.data.readingList).toHaveLength(0);
+    const { body } = await getRequest(
+      `/api/v1/book/?status=planToRead`,
+      token,
+    ).expect(200);
+    expect(body.data).toHaveLength(0);
   });
 
   test("should return readingList with 2 books on it", async () => {
@@ -69,19 +70,20 @@ describe("ReadingList", () => {
     })
       .lean()
       .exec();
-    const { body } = await getRequest(`/api/v1/user/readinglist`, token).expect(
-      200,
-    );
-    expect(body.data.readingList).toHaveLength(2);
+    const { body } = await getRequest(
+      `/api/v1/book?status=planToRead`,
+      token,
+    ).expect(200);
+    expect(body.data).toHaveLength(2);
   });
 
   test("should add one book to the readinglist and return the readinglist", async () => {
     const { body } = await postRequest(
-      `/api/v1/user/readinglist`,
+      `/api/v1/book?status=planToRead`,
       token,
       book1,
     ).expect(201);
-    expect(body.data.readingList).toHaveLength(1);
+    expect(body.data).toHaveLength(1);
   });
 
   test("should remove one book from the readinglist", async () => {
@@ -95,10 +97,10 @@ describe("ReadingList", () => {
       .lean()
       .exec();
     const { body } = await deleteRequest(
-      `/api/v1/user/readinglist/${book2.goodreadsId}`,
+      `/api/v1/book/${book2.goodreadsId}?status=planToRead`,
       token,
       book1,
     ).expect(200);
-    expect(body.data.readingList).toHaveLength(1);
+    expect(body.data).toHaveLength(1);
   });
 });

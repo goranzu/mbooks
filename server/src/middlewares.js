@@ -70,7 +70,10 @@ async function protect(req, res, next) {
 }
 
 function addDBModelsToRequest(req, res, next) {
-  req.User = User;
+  const models = {
+    User,
+  };
+  req.models = models;
   next();
 }
 

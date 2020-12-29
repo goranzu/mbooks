@@ -3,10 +3,10 @@
 const faker = require("faker");
 const supertest = require("supertest");
 const bcrypt = require("bcrypt");
-const errorMessages = require("../../constants/errorMessages");
-const { app } = require("../../server");
-const User = require("../user/user.model");
-const { signToken } = require("../../lib/jwt");
+const { app } = require("../server");
+const User = require("../resources/user/user.model");
+const { signToken } = require("../lib/jwt");
+const errorMessages = require("../constants/errorMessages");
 
 describe("User Signup", () => {
   let user;
