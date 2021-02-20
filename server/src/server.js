@@ -19,8 +19,6 @@ app.use(helmet());
 app.use(cors());
 config.isDev && app.use(morgan("dev"));
 
-app.use(middlewares.addDBModelsToRequest);
-
 app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {

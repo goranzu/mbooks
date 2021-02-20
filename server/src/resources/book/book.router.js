@@ -2,9 +2,11 @@
 
 const { Router } = require("express");
 const tableNames = require("../../constants/tableNames");
-const db = require("../../db");
 const bookRouter = Router();
 const yup = require("yup");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 const addBookToReadingListSchema = yup.object().shape({
   goodreads_id: yup.string().required(),
@@ -31,21 +33,47 @@ bookRouter
         { ...req.body },
         { abortEarly: false },
       );
-      const readinglist = await req.user.$relatedQuery("book");
 
-      const bookIsOnReadingList = readinglist.find(
-        (b) =>
-          b.goodreads_id === req.body.goodreads_id && b.status === "is_reading",
-      );
+      const {
+        author,
+        title,
+        goodreads_id,
+        publication_year,
+        average_rating,
+        image_url,
+      } = req.body;
 
-      if (bookIsOnReadingList) {
-        res.status(403);
-        return next(new Error("This book is already on your readinglist."));
-      }
+      await prisma.book.create({
+        data: {
+          author,
+          goodreadsId: goodreads_id,
+          title,
+          publicationYear: Number(publication_year),
+          averageRating: Number(average_rating),
+          imageUrl: image_url,
+          ReadingLog: {
+            // TODO: mark book state
+            create: {
+              userId: req.user.id,
+            },
+          },
+        },
+      });
 
-      const book = await req.user.$relatedQuery("book").insert(req.body);
+      // const user = await prisma.user.findUnique({
+      //   where: {
+      //     id: req.user.id,
+      //   },
+      //   include: {
+      //     ReadingLog: {
+      //       include: {
+      //         book: true,
+      //       },
+      //     },
+      //   },
+      // });
 
-      return res.status(201).json({ data: book });
+      return res.status(201).end();
     } catch (error) {
       next(error);
     }

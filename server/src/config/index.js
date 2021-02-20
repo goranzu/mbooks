@@ -1,7 +1,6 @@
 "use strict";
 
-require("dotenv-safe").config();
-const { merge } = require("lodash");
+require("dotenv").config();
 
 const env = process.env.NODE_ENV || "development";
 
@@ -15,19 +14,4 @@ const baseConfig = {
   },
 };
 
-let config;
-
-switch (env) {
-  case "dev":
-  case "development":
-    config = require("./dev");
-    break;
-  case "test":
-  case "testing":
-    config = require("./testing");
-    break;
-  default:
-    config = require("./dev");
-}
-
-module.exports = merge(baseConfig, config);
+module.exports = baseConfig;

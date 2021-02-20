@@ -3,8 +3,9 @@
 const config = require("./config");
 const errorMessages = require("./constants/errorMessages");
 const { verifyToken } = require("./lib/jwt");
-const Book = require("./resources/book/book.model");
-const User = require("./resources/user/user.model");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 function notFound(req, res, next) {
   const error = new Error(`Not Found - ${req.originalUrl}`);
@@ -51,7 +52,13 @@ async function protect(req, res, next) {
 
     const payload = await verifyToken(token);
 
-    const user = await req.User.query().findById(payload.sub);
+    // const user = await req.User.query().findById(payload.sub);
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: {
+        id: true,
+      },
+    });
     if (user == null) {
       res.status(401);
       return next(new Error(errorMessages.notAuthenticated));
@@ -66,10 +73,10 @@ async function protect(req, res, next) {
   }
 }
 
-function addDBModelsToRequest(req, res, next) {
-  req.User = User;
-  req.Book = Book;
-  next();
-}
+// function addDBModelsToRequest(req, res, next) {
+//   req.User = User;
+//   req.Book = Book;
+//   next();
+// }
 
-module.exports = { notFound, errorHandler, protect, addDBModelsToRequest };
+module.exports = { notFound, errorHandler, protect };
