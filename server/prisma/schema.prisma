@@ -11,31 +11,33 @@ generator client {
 }
 
 model User {
-  id String @id @default(cuid())
-  username String
-  password String
-  lastLogin DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String       @id @default(cuid())
+  username   String
+  password   String
+  lastLogin  DateTime?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  ReadingLog ReadingLog[]
 }
 
 model Book {
-  id String @id @default(cuid())
-  goodreadsId String @unique
-  title String
-  author String
-  description String?
-  imageUrl String?
-  averageRating Float?
+  id              String       @id @default(cuid())
+  goodreadsId     String       @unique
+  title           String
+  author          String
+  description     String?
+  imageUrl        String?
+  averageRating   Float?
   publicationYear Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  ReadingLog      ReadingLog[]
 }
 
 model ReadingLog {
-  id String @id @default(cuid())
+  id     String  @id @default(cuid())
   userId String?
   bookId String?
-  user User? @relation(fields: [userId], references: [id])
-  book Book? @relation(fields: [bookId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
+  book   Book?   @relation(fields: [bookId], references: [id])
 }
