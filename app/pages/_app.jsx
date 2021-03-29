@@ -1,8 +1,10 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import PropTypes from "prop-types";
-import "../styles/globals.css";
 import { useRef } from "react";
+import "../styles/globals.css";
+import "../styles/reset.css";
+import "../styles/typography.css";
 
 function MyApp({ Component, pageProps }) {
   const queryClientRef = useRef();
