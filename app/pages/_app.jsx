@@ -5,6 +5,7 @@ import { useRef } from "react";
 import "../styles/globals.css";
 import "../styles/reset.css";
 import "../styles/typography.css";
+import "../styles/utils.css";
 
 function MyApp({ Component, pageProps }) {
   const queryClientRef = useRef();

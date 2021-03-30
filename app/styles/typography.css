@@ -33,3 +33,7 @@
 .fs-900 {
   font-size: var(--fs-900);
 }
+
+.semi-bold {
+  font-weight: 600;
+}
