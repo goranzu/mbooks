@@ -3,11 +3,18 @@ import { useMutation } from "react-query";
 import Page from "../components/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
+import useUser from "../lib/useUser";
 
 export default function SearchPage() {
+  const { user } = useUser({ redirectTo: "/login" });
   const { mutate, status, data } = useMutation((inputs) =>
     axios.post("/api/search", inputs),
   );
+
+  // Prevent flash of unauthenticated content
+  if (user == null) {
+    return <p></p>;
+  }
 
   return (
     <Page>

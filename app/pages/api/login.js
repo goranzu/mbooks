@@ -14,28 +14,40 @@ export default handler.use(session).post(async (req, res) => {
   }
 
   try {
-    const hashedPassword = await argon.hash(password);
-    const user = await prisma.user.create({
-      data: {
+    const user = await prisma.user.findFirst({
+      where: {
         username,
-        password: hashedPassword,
       },
       select: {
         id: true,
         username: true,
+        password: true,
       },
     });
+    if (user == null) {
+      res.status(401).json({ error: { message: "Not Authorized" } });
+      return;
+    }
+
+    const passwordMatch = await argon.verify(user.password, password);
+    if (!passwordMatch) {
+      res.status(401).json({ error: { message: "Not Authorized" } });
+      return;
+    }
 
     req.session.set("user", { id: user.id, username: user.username });
 
     await req.session.save();
 
-    res.status(201).json({
-      data: {
-        isLoggedIn: true,
-        user: { id: user.id, username: user.username },
-      },
-    });
+    res
+      .status(200)
+      .json({
+        data: {
+          isLoggedIn: true,
+          user: { id: user.id, username: user.username },
+        },
+      });
+    return;
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: { message: "Server Error" } });
