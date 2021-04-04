@@ -1,7 +1,8 @@
 import nc from "next-connect";
 import axios from "axios";
-import { onError } from "../../lib/middlewares";
+import { onError, protect } from "../../lib/middlewares";
 import xml2js from "xml2js";
+import session from "../../lib/session";
 
 const KEY = process.env.GOODREADS_KEY;
 const URL = `https://www.goodreads.com/search/index.xml?key=${KEY}`;
@@ -10,23 +11,26 @@ const xmlParser = new xml2js.Parser();
 
 const handler = nc({ onError });
 
-export default handler.post(async (req, res) => {
-  if (!req.body.title) {
-    res.status(400).json({ error: { message: "Invalid input" } });
-    return;
-  }
+export default handler
+  .use(session)
+  .use(protect)
+  .post(async (req, res) => {
+    if (!req.body.title) {
+      res.status(400).json({ error: { message: "Invalid input" } });
+      return;
+    }
 
-  const response = await axios.get(`${URL}&q=${req.body.title}`);
+    const response = await axios.get(`${URL}&q=${req.body.title}`);
 
-  const parsedData = await xmlParser.parseStringPromise(response.data);
+    const parsedData = await xmlParser.parseStringPromise(response.data);
 
-  const totalResults =
-    parsedData.GoodreadsResponse.search[0]["total-results"][0];
+    const totalResults =
+      parsedData.GoodreadsResponse.search[0]["total-results"][0];
 
-  const formattedData = formatResponse(parsedData.GoodreadsResponse);
+    const formattedData = formatResponse(parsedData.GoodreadsResponse);
 
-  res.status(200).json({ data: { totalResults, books: formattedData } });
-});
+    res.status(200).json({ data: { totalResults, books: formattedData } });
+  });
 
 function formatResponse(data = {}) {
   const searchData = data.search[0];

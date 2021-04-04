@@ -1,8 +1,25 @@
-import { NextApiResponse } from "next";
+import { UnauthorizedError } from "./errors";
 
-function onError(err, _, res) {
+function onError(err, req, res) {
   console.error(err);
-  res.status(500).end("Something went wrong...");
+  res.status(err.statusCode || 500).json({
+    error: {
+      path: req.url,
+      message: err.message,
+      stack: process.env.NODE_ENV === "development" && err.stack,
+    },
+  });
 }
 
-export { onError };
+function protect(req, res, next) {
+  const user = req.session.get("user");
+
+  if (user == null) {
+    throw new UnauthorizedError();
+  }
+
+  req.userId = user.id;
+  next();
+}
+
+export { onError, protect };
