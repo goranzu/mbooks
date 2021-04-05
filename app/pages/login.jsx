@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
-import Page from "../components/Page";
 import useForm from "../lib/useForm";
 import queryClient from "../lib/queryClient";
 
@@ -24,7 +23,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   return (
-    <Page>
+    <main>
       {status === "error" && <p>{error.message}</p>}
       <h1>Login</h1>
       <form
@@ -59,6 +58,6 @@ export default function LoginPage() {
           <button type="submit">Login</button>
         </fieldset>
       </form>
-    </Page>
+    </main>
   );
 }

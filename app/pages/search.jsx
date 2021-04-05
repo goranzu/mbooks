@@ -7,14 +7,33 @@ import useUser from "../lib/useUser";
 
 export default function SearchPage() {
   const { user } = useUser({ redirectTo: "/login" });
+
   const { mutate, status, data } = useMutation((inputs) =>
     axios.post("/api/search", inputs),
+  );
+
+  const { mutate: mutateBook, status: bookStatus } = useMutation((book) =>
+    axios.post("/api/books", book),
   );
 
   // Prevent flash of unauthenticated content
   if (user == null) {
     return <p></p>;
   }
+
+  function handleAddToReadingList(book) {
+    console.log(book);
+    mutateBook({
+      goodreadsId: book.goodreadsId,
+      title: book.title,
+      authorName: book.author.name,
+      imageUrl: book.imageUrl,
+      averageRating: book.averageRating,
+      publicationYear: book.publicationYear,
+    });
+  }
+
+  console.log(bookStatus);
 
   return (
     <Page>
@@ -25,26 +44,20 @@ export default function SearchPage() {
           <p>Something went wrong please try again later</p>
         )}
         {status === "success" &&
-          data.data.data.books.map(
-            ({
-              title,
-              goodreadsId,
-              imageUrl,
-              publicationYear,
-              author,
-              averageRating,
-            }) => (
-              <SearchCard
-                key={goodreadsId}
-                authorName={author?.name}
-                title={title}
-                goodreadsId={goodreadsId}
-                imageUrl={imageUrl}
-                publicationYear={publicationYear}
-                averageRating={averageRating}
-              />
-            ),
-          )}
+          data.data.data.books.map((book) => (
+            <SearchCard
+              key={book.goodreadsId}
+              authorName={book.author?.name}
+              title={book.title}
+              imageUrl={book.imageUrl}
+              publicationYear={Number(book.publicationYear)}
+              averageRating={Number(book.averageRating)}
+            >
+              <button onClick={() => handleAddToReadingList(book)}>
+                Add to reading list
+              </button>
+            </SearchCard>
+          ))}
       </section>
     </Page>
   );

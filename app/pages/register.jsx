@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useMutation } from "react-query";
-import Page from "../components/Page";
 import queryClient from "../lib/queryClient";
 import useForm from "../lib/useForm";
 
@@ -24,7 +23,7 @@ export default function RegisterPage() {
   const router = useRouter();
 
   return (
-    <Page>
+    <main>
       {status === "error" && <p>{error.message}</p>}
       <h1>Register</h1>
       <form
@@ -58,6 +57,6 @@ export default function RegisterPage() {
         </fieldset>
         <button type="submit">Register</button>
       </form>
-    </Page>
+    </main>
   );
 }
