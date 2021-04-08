@@ -1,0 +1,28 @@
+.form {
+  max-width: 40rem;
+  margin: 2em auto;
+}
+
+.form fieldset {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  border: none;
+  row-gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.form label {
+  grid-column: 1 / -1;
+  grid-row-start: 1;
+}
+
+.form input,
+.form button[type="submit"] {
+  border-radius: 5px;
+  border-radius: 1px solid black;
+  padding: 0.25em 1em;
+}
+
+/* .form button[type="submit"] {
+} */
