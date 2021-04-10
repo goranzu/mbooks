@@ -12,3 +12,10 @@
 .header * + * {
   margin-left: 2em;
 }
+
+.logout {
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  background-color: var(--clr-accent-200);
+}

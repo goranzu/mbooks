@@ -16,7 +16,9 @@
   --fs-900: calc(var(--fs-800) * var(--scale));
 
   --crl-primary-100: #fff2dc;
+  --crl-primary-200: #e3d3b8;
   --clr-accent-100: #ff8345;
+  --clr-accent-200: #fcb48f;
 
   --background-clr: var(--crl-primary-100);
 }
@@ -26,12 +28,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: var(--fs-400);
   background-color: var(--background-clr);
-}
-
-.wrapper {
-  max-width: 75rem;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .btn {

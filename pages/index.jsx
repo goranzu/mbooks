@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "../components/modal/Modal";
-import AuthForm from "../components/register-form/AuthForm";
+import AuthForm from "../components/auth-form/AuthForm";
 import styles from "../styles/homepage.module.css";
 
 export default function Home() {

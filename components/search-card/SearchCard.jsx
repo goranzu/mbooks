@@ -10,17 +10,17 @@ export default function SearchCard({
   children,
 }) {
   return (
-    <article className={`${styles.card} center`}>
+    <article className={`${styles.card} center fs-100`}>
       <img src={imageUrl} alt={title} />
       <section className={styles.text}>
         <header>
-          <h2 className="fs-500">{title}</h2>
+          <h2 className="fs-100">{title}</h2>
           <small>({publicationYear})</small>
         </header>
-        <p>Written by {authorName}</p>
+        <p>by {authorName}</p>
         <p>rating: {averageRating}</p>
       </section>
-      {children}
+      {/* {children} */}
     </article>
   );
 }

@@ -12,6 +12,5 @@ export default handler.use(session).get(async (req, res) => {
     return;
   }
 
-  console.log(user);
   res.status(200).json({ data: { isLoggedIn: true, user: { ...user } } });
 });

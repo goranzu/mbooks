@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useMutation } from "react-query";
-import Page from "../components/Page";
+import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
 import useUser from "../lib/useUser";
+import styles from "../styles/searchpage.module.css";
 
 export default function SearchPage() {
   const { user } = useUser({ redirectTo: "/" });
@@ -22,7 +23,6 @@ export default function SearchPage() {
   }
 
   function handleAddToReadingList(book) {
-    console.log(book);
     mutateBook({
       goodreadsId: book.goodreadsId,
       title: book.title,
@@ -33,12 +33,14 @@ export default function SearchPage() {
     });
   }
 
-  console.log(bookStatus);
+  if (status === "success") {
+    console.log(data.data.data.books);
+  }
 
   return (
     <Page>
       <SearchForm handleSubmit={mutate} />
-      <section>
+      <section className={styles.results}>
         {status === "loading" && <p>Loading...</p>}
         {status === "error" && (
           <p>Something went wrong please try again later</p>

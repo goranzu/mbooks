@@ -1,11 +1,19 @@
 .form {
-  max-width: 40rem;
+  max-width: 35rem;
   margin: 2em auto;
+  text-align: left;
+}
+
+@media (min-width: 75rem) {
+  .form {
+    margin-left: 2em;
+    margin-right: 0;
+  }
 }
 
 .form fieldset {
   display: grid;
-  grid-template-columns: 1fr min-content;
+  grid-template-columns: 1fr;
   border: none;
   row-gap: 0.25rem;
   margin: 0;
@@ -15,6 +23,19 @@
 .form label {
   grid-column: 1 / -1;
   grid-row-start: 1;
+}
+
+.form input {
+  background-color: var(--crl-primary-200);
+  border: none;
+}
+
+.form button[type="submit"] {
+  border: none;
+  background-color: var(--clr-accent-100);
+  color: white;
+  font-weight: 600;
+  justify-self: start;
 }
 
 .form input,

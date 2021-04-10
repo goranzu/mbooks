@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useQuery } from "react-query";
-import Page from "../components/Page";
+import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 
 export default function ReadingListPage() {

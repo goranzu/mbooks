@@ -44,6 +44,8 @@ function formatResponse(data = {}) {
         authorId: bestBook.author[0].id[0]._,
         name: bestBook.author[0].name[0],
       },
+      // Regex changes the image url to remove size constraints. Matches _SY199_
+      // imageUrl: bestBook.image_url[0].replace(/\._([^_]+)_(?=\.jpg$)/g, ""),
       imageUrl: bestBook.image_url[0],
       averageRating: book.average_rating[0],
       publicationYear: book.original_publication_year[0]._,

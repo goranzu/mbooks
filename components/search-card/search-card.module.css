@@ -1,26 +1,12 @@
 .card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem;
-  max-width: 50rem;
-  padding: 3em 0;
-  border-bottom: 1px solid black;
-}
-
-.card:first-of-type {
-  padding-top: 1em;
-}
-
-/* .card + .card {
-  margin-top: 2em;
-} */
-
-.card .text {
-  align-self: center;
-}
-
-.card header {
   display: flex;
-  align-items: center;
-  gap: 0.5em;
+  flex-direction: column;
+  border-bottom: 1px solid black;
+  width: 15rem;
+  padding: 1em;
+  gap: 0.5rem;
+}
+
+.card img {
+  align-self: center;
 }

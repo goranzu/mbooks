@@ -24,7 +24,9 @@ export default function Header() {
       {user?.user && (
         <>
           <p>{user.user.username}</p>
-          <button onClick={handleLogout}>logout</button>{" "}
+          <button className={styles.logout} onClick={handleLogout}>
+            logout
+          </button>{" "}
         </>
       )}
     </header>
