@@ -1,6 +1,8 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 import useForm from "../../lib/useForm";
 import styles from "./auth-form.module.css";
@@ -11,6 +13,8 @@ export default function AuthForm({ register, handleModalClose }) {
     password: "liam",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const authContext = useContext(AuthContext);
+  const router = useRouter();
 
   const endpoint = register ? "/api/register" : "/api/login";
 
@@ -43,7 +47,8 @@ export default function AuthForm({ register, handleModalClose }) {
           try {
             setIsLoading(true);
             const { data } = await axios.post(endpoint, { username, password });
-            console.log(data);
+            authContext.setAuthState(data.data);
+            router.push("/search");
           } catch (error) {
             console.error(error);
           } finally {

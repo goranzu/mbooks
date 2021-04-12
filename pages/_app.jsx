@@ -1,12 +1,33 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import PropTypes from "prop-types";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/globals.css";
 import "../styles/reset.css";
 import "../styles/typography.css";
 import "../styles/utils.css";
+import { AuthContext, AuthProvider } from "../context/AuthContext";
+import { FetchProvider } from "../context/FetchContext";
+import { useRouter } from "next/router";
+
+const routes = ["/search"];
+
+const AppRoutes = ({ component: Component, pageProps }) => {
+  const authContext = useContext(AuthContext);
+  const router = useRouter();
+
+  if (authContext.authState == null) {
+    return <p>loading...</p>;
+  }
+
+  if (routes.includes(router.pathname) && !authContext.isAuthenticated()) {
+    router.push("/");
+    return <p></p>;
+  }
+
+  return <Component {...pageProps} />;
+};
 
 function MyApp({ Component, pageProps }) {
   const queryClientRef = useRef();
@@ -15,17 +36,27 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <QueryClientProvider client={queryClientRef.current}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <ReactQueryDevtools />
-        <Component {...pageProps} />
-      </Hydrate>
-    </QueryClientProvider>
+    <AuthProvider>
+      <FetchProvider>
+        <QueryClientProvider client={queryClientRef.current}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <ReactQueryDevtools />
+            {/* <Component {...pageProps} /> */}
+            <AppRoutes component={Component} pageProps={pageProps} />
+          </Hydrate>
+        </QueryClientProvider>
+      </FetchProvider>
+    </AuthProvider>
   );
 }
 
 MyApp.propTypes = {
   Component: PropTypes.any,
+  pageProps: PropTypes.any,
+};
+
+AppRoutes.propTypes = {
+  component: PropTypes.any,
   pageProps: PropTypes.any,
 };
 

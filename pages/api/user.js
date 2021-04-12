@@ -7,9 +7,12 @@ const handler = nc({ onError });
 export default handler.use(protect).get(async (req, res) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+    const expiresAt = req.user.exp;
     res
       .status(200)
-      .json({ data: { user: { id: user.id, username: user.username } } });
+      .json({
+        data: { user: { id: user.id, username: user.username }, expiresAt },
+      });
     return;
   } catch (error) {
     res.status(401).json({ error: { message: "Not Authorized" } });
