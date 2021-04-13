@@ -2,19 +2,17 @@ import nc from "next-connect";
 import { BookOnReadingListError } from "../../lib/errors";
 import { onError, protect } from "../../lib/middlewares";
 import prisma from "../../lib/prisma";
-import session from "../../lib/session";
 
 const handler = nc({ onError });
 
 // TODO: check query param for plan-to-read or finished-reading
 
 export default handler
-  .use(session)
   .use(protect)
   .get(async (req, res) => {
     const readingList = await prisma.usersReadingLog.findMany({
       where: {
-        userId: req.userId,
+        userId: req.user.id,
         status: "PLAN_TO_READ",
       },
       include: { book: true },

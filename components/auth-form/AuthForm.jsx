@@ -1,8 +1,9 @@
 import axios from "axios";
-import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import { useMutation } from "react-query";
-import queryClient from "../../lib/queryClient";
+import PropTypes from "prop-types";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
 import useForm from "../../lib/useForm";
 import styles from "./auth-form.module.css";
 
@@ -11,20 +12,11 @@ export default function AuthForm({ register, handleModalClose }) {
     username: "liam",
     password: "liam",
   });
-
-  const url = register ? "/api/register" : "/api/login";
-
-  const { mutate, status, error } = useMutation(
-    (inputs) => axios.post(url, inputs),
-    {
-      onSuccess: ({ data }) => {
-        queryClient.setQueryData("user", data.data);
-        console.log(queryClient);
-        router.push("/search");
-      },
-    },
-  );
+  const [isLoading, setIsLoading] = useState(false);
+  const authContext = useContext(AuthContext);
   const router = useRouter();
+
+  const endpoint = register ? "/api/register" : "/api/login";
 
   return (
     <>
@@ -52,13 +44,16 @@ export default function AuthForm({ register, handleModalClose }) {
           const { username, password } = inputs;
           if (username.length === 0 || password.length === 0) return;
 
-          queryClient.clear();
-          queryClient.removeQueries("user");
-          console.log(queryClient);
-
-          mutate(inputs);
-          // const { data } = await axios.post(url, inputs);
-          // console.log(data.data.user);
+          try {
+            setIsLoading(true);
+            const { data } = await axios.post(endpoint, { username, password });
+            authContext.setAuthState(data.data);
+            setIsLoading(false);
+            router.push("/search");
+          } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+          }
         }}
         method="POST"
       >
@@ -80,7 +75,7 @@ export default function AuthForm({ register, handleModalClose }) {
             to register.
           </p>
         )}
-        {status === "error" && <p>{error.message}</p>}
+        {/* {status === "error" && <p>{error.message}</p>} */}
         <fieldset disabled={status === "loading"}>
           <label htmlFor="username">Username</label>
           <input
@@ -100,7 +95,11 @@ export default function AuthForm({ register, handleModalClose }) {
             onChange={handleChange}
           />
         </fieldset>
-        <button className={register ? "btn" : "btn btn--outline"} type="submit">
+        <button
+          disabled={isLoading}
+          className={register ? "btn" : "btn btn--outline"}
+          type="submit"
+        >
           {register ? "Register" : "Login"}
         </button>
       </form>

@@ -1,12 +1,14 @@
 import nc from "next-connect";
 import { onError } from "../../lib/middlewares";
 import argon from "argon2";
+import * as jwtDecode from "jwt-decode";
 import prisma from "../../lib/prisma";
-import session from "../../lib/session";
+import { createToken, setCookie } from "../../lib/uitl";
 
 const handler = nc({ onError });
 
-export default handler.use(session).post(async (req, res) => {
+export default handler.post(async (req, res) => {
+  // TODO: Handle duplicate usernames
   const { password, username } = req.body;
   if (password == null || username == null) {
     res.status(400).json({ error: { message: "Invalid Input" } });
@@ -26,14 +28,20 @@ export default handler.use(session).post(async (req, res) => {
       },
     });
 
-    req.session.set("user", { id: user.id, username: user.username });
+    const userInfo = { id: user.id, username: user.username };
 
-    await req.session.save();
+    const token = createToken(userInfo);
+
+    const decoded = jwtDecode(token);
+
+    const { exp } = decoded;
+
+    setCookie(res, token);
 
     res.status(201).json({
       data: {
-        isLoggedIn: true,
-        user: { id: user.id, username: user.username },
+        user: userInfo,
+        expiresAt: exp,
       },
     });
   } catch (error) {

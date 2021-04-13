@@ -1,16 +1,20 @@
 import nc from "next-connect";
-import { onError } from "../../lib/middlewares";
-import session from "../../lib/session";
+import { onError, protect } from "../../lib/middlewares";
+import prisma from "../../lib/prisma";
 
 const handler = nc({ onError });
 
-export default handler.use(session).get(async (req, res) => {
-  const user = req.session.get("user");
-
-  if (user == null) {
-    res.status(401).json({ data: { isLoggedIn: false } });
+export default handler.use(protect).get(async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+    const expiresAt = req.user.exp;
+    res
+      .status(200)
+      .json({
+        data: { user: { id: user.id, username: user.username }, expiresAt },
+      });
     return;
+  } catch (error) {
+    res.status(401).json({ error: { message: "Not Authorized" } });
   }
-
-  res.status(200).json({ data: { isLoggedIn: true, user: { ...user } } });
 });

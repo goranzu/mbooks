@@ -1,30 +1,16 @@
-import axios from "axios";
-import { useMutation } from "react-query";
-import queryClient from "../../lib/queryClient";
-import { useRouter } from "next/router";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import styles from "./header.module.css";
 
 export default function Header() {
-  const user = queryClient.getQueryData("user");
-  const router = useRouter();
-
-  const { mutate } = useMutation(() => axios.get("/api/logout"), {
-    onSuccess: () => {
-      queryClient.removeQueries("user", { exact: true });
-      router.push("/");
-    },
-  });
-
-  async function handleLogout() {
-    mutate();
-  }
+  const { authState, logout } = useContext(AuthContext);
 
   return (
     <header className={styles.header}>
-      {user?.user && (
+      {authState?.user && (
         <>
-          <p>{user.user.username}</p>
-          <button className={styles.logout} onClick={handleLogout}>
+          <p>{authState.user.username}</p>
+          <button className={styles.logout} onClick={logout}>
             logout
           </button>{" "}
         </>
