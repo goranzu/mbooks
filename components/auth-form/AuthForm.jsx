@@ -48,11 +48,11 @@ export default function AuthForm({ register, handleModalClose }) {
             setIsLoading(true);
             const { data } = await axios.post(endpoint, { username, password });
             authContext.setAuthState(data.data);
+            setIsLoading(false);
             router.push("/search");
           } catch (error) {
-            console.error(error);
-          } finally {
             setIsLoading(false);
+            console.error(error);
           }
         }}
         method="POST"

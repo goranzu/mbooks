@@ -14,7 +14,7 @@ function AuthProvider({ children }) {
     (async function () {
       try {
         const { data } = await privateFetch().get("/user");
-        setAuthState({ user: data.data.user });
+        setAuthState({ user: data.data.user, expiresAt: data.data.expiresAt });
       } catch (error) {
         setAuthState({ user: null });
         console.error(error);
@@ -23,17 +23,12 @@ function AuthProvider({ children }) {
   }, []);
 
   function setAuthInfo({ user, expiresAt }) {
-    window.localStorage.setItem("user", JSON.stringify(user));
-    window.localStorage.setItem("expiresAt", expiresAt);
-
     setAuthState({ user, expiresAt });
   }
 
   async function logout() {
     try {
       await publicFetch.delete("/logout");
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("expiresAt");
       setAuthState({ user: null, expiresAt: null });
       router.push("/");
     } catch (error) {

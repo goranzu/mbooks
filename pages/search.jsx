@@ -1,47 +1,45 @@
 import axios from "axios";
+import { useRouter } from "next/router";
+import { useContext } from "react";
 import { useMutation } from "react-query";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
-import useUser from "../lib/useUser";
+import { AuthContext } from "../context/AuthContext";
 import styles from "../styles/searchpage.module.css";
 
 export default function SearchPage() {
-  // const { user } = useUser({ redirectTo: "/" });
+  const authContext = useContext(AuthContext);
+  const router = useRouter();
 
-  // const { mutate, status, data } = useMutation((inputs) =>
-  //   axios.post("/api/search", inputs),
-  // );
+  const { mutate, status, data } = useMutation((inputs) =>
+    axios.post("/api/search", inputs),
+  );
 
-  // const { mutate: mutateBook, status: bookStatus } = useMutation((book) =>
-  //   axios.post("/api/books", book),
-  // );
+  const { mutate: mutateBook, status: bookStatus } = useMutation((book) =>
+    axios.post("/api/books", book),
+  );
 
-  // // Prevent flash of unauthenticated content
-  // if (user == null) {
-  //   return <p></p>;
-  // }
+  if (!authContext.isAuthenticated()) {
+    router.push("/");
+    return <></>;
+  }
 
-  // function handleAddToReadingList(book) {
-  //   mutateBook({
-  //     goodreadsId: book.goodreadsId,
-  //     title: book.title,
-  //     authorName: book.author.name,
-  //     imageUrl: book.imageUrl,
-  //     averageRating: book.averageRating,
-  //     publicationYear: book.publicationYear,
-  //   });
-  // }
-
-  // if (status === "success") {
-  //   console.log(data.data.data.books);
-  // }
+  function handleAddToReadingList(book) {
+    mutateBook({
+      goodreadsId: book.goodreadsId,
+      title: book.title,
+      authorName: book.author.name,
+      imageUrl: book.imageUrl,
+      averageRating: book.averageRating,
+      publicationYear: book.publicationYear,
+    });
+  }
 
   return (
     <Page>
-      {/* <SearchForm handleSubmit={mutate} /> */}
-      <SearchForm />
-      {/* <section className={styles.results}>
+      <SearchForm handleSubmit={mutate} />
+      <section className={styles.results}>
         {status === "loading" && <p>Loading...</p>}
         {status === "error" && (
           <p>Something went wrong please try again later</p>
@@ -61,7 +59,7 @@ export default function SearchPage() {
               </button>
             </SearchCard>
           ))}
-      </section> */}
+      </section>
     </Page>
   );
 }
