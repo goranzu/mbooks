@@ -25,10 +25,15 @@ export default handler.post(async (req, res) => {
       select: {
         id: true,
         username: true,
+        books: true,
       },
     });
 
-    const userInfo = { id: user.id, username: user.username };
+    const userInfo = {
+      id: user.id,
+      username: user.username,
+      books: user.books,
+    };
 
     const token = createToken(userInfo);
 

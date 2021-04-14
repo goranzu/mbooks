@@ -20,7 +20,7 @@ export default function SearchCard({
         <p>by {authorName}</p>
         <p>rating: {averageRating}</p>
       </section>
-      {/* {children} */}
+      {children}
     </article>
   );
 }

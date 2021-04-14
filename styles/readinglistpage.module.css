@@ -1,0 +1,15 @@
+.main {
+  grid-column-start: 2;
+  padding: 1.5em;
+}
+
+.main > h2 {
+  text-align: left;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 4em;
+}

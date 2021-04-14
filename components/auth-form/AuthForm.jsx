@@ -8,6 +8,7 @@ import useForm from "../../lib/useForm";
 import styles from "./auth-form.module.css";
 
 export default function AuthForm({ register, handleModalClose }) {
+  // TODO: Handle Errors
   const { inputs, handleChange } = useForm({
     username: "liam",
     password: "liam",
@@ -47,7 +48,9 @@ export default function AuthForm({ register, handleModalClose }) {
           try {
             setIsLoading(true);
             const { data } = await axios.post(endpoint, { username, password });
+            console.log(data);
             authContext.setAuthState(data.data);
+
             setIsLoading(false);
             router.push("/search");
           } catch (error) {

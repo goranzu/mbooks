@@ -19,12 +19,11 @@ export default handler.post(async (req, res) => {
       where: {
         username,
       },
-      select: {
-        id: true,
-        username: true,
-        password: true,
+      include: {
+        books: { include: { book: true } },
       },
     });
+
     if (user == null) {
       res.status(401).json({ error: { message: "Not Authorized" } });
       return;
@@ -36,7 +35,11 @@ export default handler.post(async (req, res) => {
       return;
     }
 
-    const userInfo = { id: user.id, username: user.username };
+    const userInfo = {
+      id: user.id,
+      username: user.username,
+      books: user.books.map((b) => b.goodreadsId),
+    };
 
     const token = createToken(userInfo);
 

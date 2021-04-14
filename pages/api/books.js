@@ -1,5 +1,5 @@
 import nc from "next-connect";
-import { BookOnReadingListError } from "../../lib/errors";
+import { BookOnReadingListError, UserInputError } from "../../lib/errors";
 import { onError, protect } from "../../lib/middlewares";
 import prisma from "../../lib/prisma";
 
@@ -12,7 +12,7 @@ export default handler
   .get(async (req, res) => {
     const readingList = await prisma.usersReadingLog.findMany({
       where: {
-        userId: req.user.id,
+        userId: req.user.sub,
         status: "PLAN_TO_READ",
       },
       include: { book: true },
@@ -54,7 +54,7 @@ export default handler
             averageRating,
             publicationYear,
             reader: {
-              create: { user: { connect: { id: req.userId } } },
+              create: { user: { connect: { id: req.user.sub } } },
             },
           },
         });
@@ -64,9 +64,11 @@ export default handler
       }
     } else {
       try {
+        console.log(bookInDB);
+
         await prisma.usersReadingLog.create({
           data: {
-            userId: req.userId,
+            userId: req.user.sub,
             bookId: bookInDB.id,
           },
         });
@@ -77,5 +79,30 @@ export default handler
       }
     }
 
-    res.status(201).end();
+    res.status(201).json({
+      data: {
+        goodreadsId,
+      },
+    });
+  })
+  .delete(async (req, res, next) => {
+    try {
+      const userId = req.user.sub;
+      const bookId = req.body.id;
+      console.log("BOOOOOOOK", req.params);
+      if (userId == null || bookId == null) {
+        throw new UserInputError();
+      }
+
+      await prisma.usersReadingLog.delete({
+        where: {
+          userId,
+          bookId,
+        },
+      });
+      res.status(204).end();
+      return;
+    } catch (error) {
+      next(error);
+    }
   });

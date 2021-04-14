@@ -26,15 +26,15 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientRef.current}>
+    <QueryClientProvider client={queryClientRef.current}>
+      <AuthProvider>
         <Hydrate state={pageProps.dehydratedState}>
           <ReactQueryDevtools />
           {/* <Component {...pageProps} /> */}
           <AppRoutes component={Component} pageProps={pageProps} />
         </Hydrate>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -6,15 +6,26 @@ const handler = nc({ onError });
 
 export default handler.use(protect).get(async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.user.sub } });
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.sub },
+      include: {
+        books: { include: { book: true } },
+      },
+    });
+
+    const userInfo = {
+      id: user.id,
+      username: user.username,
+      books: user.books.map((b) => b.book.goodreadsId),
+    };
+
     const expiresAt = req.user.exp;
-    res
-      .status(200)
-      .json({
-        data: { user: { id: user.id, username: user.username }, expiresAt },
-      });
+    res.status(200).json({
+      data: { user: userInfo, expiresAt },
+    });
     return;
   } catch (error) {
+    console.error(error);
     res.status(401).json({ error: { message: "Not Authorized" } });
   }
 });
