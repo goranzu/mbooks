@@ -39,7 +39,7 @@ model UsersReadingLog {
   bookId String
   status BookStatus @default(PLAN_TO_READ)
 
-  @@id([userId, bookId])
+  @@id([userId, bookId, status])
 }
 
 enum BookStatus {

@@ -13,7 +13,7 @@ const navItems = [
   },
   {
     label: "Finished Reading",
-    path: "/finished",
+    path: "/finished-list",
   },
 ];
 

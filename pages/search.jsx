@@ -7,7 +7,7 @@ import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
 import { AuthContext } from "../context/AuthContext";
 import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
-import { useAddBookToReadingList } from "../lib/useBook";
+import { useAddBookToList } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
 
 export default function SearchPage() {
@@ -20,7 +20,10 @@ export default function SearchPage() {
 
   const { mutate, status, data } = useSearch();
 
-  const { mutate: mutateBook, status: bookStatus } = useAddBookToReadingList();
+  const { mutate: mutateBook, status: bookStatus } = useAddBookToList({
+    list: "readingList",
+    queryKey: USER_BOOKS_QUERY_KEY,
+  });
 
   if (!authContext.isAuthenticated()) {
     router.push("/");

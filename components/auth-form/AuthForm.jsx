@@ -50,7 +50,7 @@ export default function AuthForm({ register, handleModalClose }) {
             const { data } = await axios.post(endpoint, { username, password });
             console.log(data);
             authContext.setAuthState(data.data);
-
+            handleModalClose();
             setIsLoading(false);
             router.push("/search");
           } catch (error) {
