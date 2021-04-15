@@ -17,7 +17,7 @@ export default function AuthForm({ register, handleModalClose }) {
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
-  const endpoint = register ? "/api/register" : "/api/login";
+  const endpoint = register ? "/api/auth/register" : "/api/auth/login";
 
   return (
     <>

@@ -16,8 +16,6 @@ export default handler.use(protect).post(async (req, res) => {
     return;
   }
 
-  console.log(req.user);
-
   const response = await axios.get(`${URL}&q=${req.body.title}`);
 
   const parsedData = await xmlParser.parseStringPromise(response.data);

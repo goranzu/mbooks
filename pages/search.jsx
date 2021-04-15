@@ -1,13 +1,14 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
+import BooksGrid from "../components/books-grid/BooksGrid";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
 import { AuthContext } from "../context/AuthContext";
 import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
-import { publicFetch } from "../lib/fetch";
-import styles from "../styles/searchpage.module.css";
+import { useAddBookToReadingList } from "../lib/useBook";
+import { useSearch } from "../lib/useSearch";
 
 export default function SearchPage() {
   const authContext = useContext(AuthContext);
@@ -17,21 +18,9 @@ export default function SearchPage() {
 
   const usersBooks = queryClient.getQueryData(USER_BOOKS_QUERY_KEY);
 
-  const { mutate, status, data } = useMutation((inputs) =>
-    publicFetch.post("/search", inputs),
-  );
+  const { mutate, status, data } = useSearch();
 
-  const { mutate: mutateBook, status: bookStatus } = useMutation(
-    (book) => publicFetch.post("/books", book),
-    {
-      onSuccess: ({ data }) => {
-        queryClient.setQueryData(USER_BOOKS_QUERY_KEY, (old) => [
-          ...old,
-          data.data.goodreadsId,
-        ]);
-      },
-    },
-  );
+  const { mutate: mutateBook, status: bookStatus } = useAddBookToReadingList();
 
   if (!authContext.isAuthenticated()) {
     router.push("/");
@@ -52,13 +41,11 @@ export default function SearchPage() {
   return (
     <Page>
       <SearchForm handleSubmit={mutate} />
-      <section className={styles.results}>
-        {status === "loading" && <p>Loading...</p>}
-        {status === "error" && (
-          <p>Something went wrong please try again later</p>
-        )}
-        {status === "success" &&
-          data.data.data.books.map((book) => (
+      {status === "loading" && <p>Loading...</p>}
+      {status === "error" && <p>Something went wrong please try again later</p>}
+      {status === "success" ? (
+        <BooksGrid>
+          {data.data.data.books.map((book) => (
             <SearchCard
               key={book.goodreadsId}
               authorName={book.author?.name}
@@ -67,7 +54,7 @@ export default function SearchPage() {
               publicationYear={Number(book.publicationYear)}
               averageRating={Number(book.averageRating)}
             >
-              {!usersBooks.includes(book.goodreadsId) ? (
+              {!usersBooks?.includes(book.goodreadsId) ? (
                 <button
                   disabled={bookStatus === "loading"}
                   onClick={() => handleAddToReadingList(book)}
@@ -79,7 +66,8 @@ export default function SearchPage() {
               )}
             </SearchCard>
           ))}
-      </section>
+        </BooksGrid>
+      ) : null}
     </Page>
   );
 }

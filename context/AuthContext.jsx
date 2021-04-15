@@ -33,7 +33,7 @@ function AuthProvider({ children }) {
 
   async function logout() {
     try {
-      await publicFetch.delete("/logout");
+      await publicFetch.delete("/auth/logout");
       setAuthState({ user: null, expiresAt: null });
       queryClient.setQueryData(USER_BOOKS_QUERY_KEY, null);
       router.push("/");
