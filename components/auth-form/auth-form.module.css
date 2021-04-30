@@ -23,10 +23,14 @@
   margin-top: 1em;
 }
 
-.form fieldset input {
+.form input {
   padding: 0.25em 0.5em;
   margin-top: 0;
   border: none;
   border-radius: 5px;
   border: 1px solid black;
+}
+
+.form input + p {
+  margin-top: 0.2em;
 }

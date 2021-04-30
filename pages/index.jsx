@@ -13,7 +13,8 @@ export default function Home() {
         <Modal>
           <AuthForm
             register={register}
-            handleModalClose={() => setShowModal(false)}
+            closeModal={() => setShowModal(false)}
+            flipForm={() => setRegister(!register)}
           />
         </Modal>
       )}

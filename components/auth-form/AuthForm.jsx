@@ -2,18 +2,24 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
+import * as yup from "yup";
 import { AuthContext } from "../../context/AuthContext";
-
 import useForm from "../../lib/useForm";
+import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./auth-form.module.css";
 
-export default function AuthForm({ register, handleModalClose }) {
-  // TODO: Handle Errors
+const authSchema = yup.object().shape({
+  username: yup.string().min(2).required(),
+  password: yup.string().min(4).required(),
+});
+
+export default function AuthForm({ register, closeModal, flipForm }) {
   const { inputs, handleChange } = useForm({
-    username: "liam",
-    password: "liam",
+    username: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
   const authContext = useContext(AuthContext);
   const router = useRouter();
 
@@ -21,7 +27,7 @@ export default function AuthForm({ register, handleModalClose }) {
 
   return (
     <>
-      <button className="close-modal-btn" onClick={handleModalClose}>
+      <button className="close-modal-btn" onClick={closeModal}>
         <span className="sr-only">Close Modal</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -42,13 +48,18 @@ export default function AuthForm({ register, handleModalClose }) {
         className={styles.form}
         onSubmit={async (e) => {
           e.preventDefault();
+          setErrors(null);
           const { username, password } = inputs;
-          if (username.length === 0 || password.length === 0) return;
 
           try {
+            await authSchema.validate(
+              { username, password },
+              { abortEarly: false },
+            );
+
             setIsLoading(true);
+
             const { data } = await axios.post(endpoint, { username, password });
-            console.log(data);
             authContext.setAuthState(data.data);
 
             setIsLoading(false);
@@ -56,15 +67,49 @@ export default function AuthForm({ register, handleModalClose }) {
           } catch (error) {
             setIsLoading(false);
             console.error(error);
+
+            // network error handling
+            if (error.response) {
+              if (error.response.status === 401) {
+                setErrors({
+                  network: ["Invalid credentials. Please try again."],
+                });
+              } else {
+                setErrors({
+                  network: ["Something went wrong. Please try again."],
+                });
+              }
+            }
+
+            // Validation error handling
+            if (error.inner) {
+              setErrors(
+                error.inner.reduce((acc, err) => {
+                  if (!Array.isArray(acc[err.path])) {
+                    acc[err.path] = [];
+                  }
+
+                  acc[err.path].push(err.message);
+
+                  return acc;
+                }, {}),
+              );
+            }
           }
         }}
         method="POST"
       >
-        <h2>{register ? "Create an account." : "Signin into your account."}</h2>
+        <h2>{register ? "Create an account." : "Sign into your account."}</h2>
         {register ? (
           <p>
             Already have an account? Click{" "}
-            <button type="button" className="btn-link">
+            <button
+              onClick={() => {
+                flipForm();
+              }}
+              type="button"
+              className="btn-link"
+            >
               here
             </button>{" "}
             to login.
@@ -72,14 +117,19 @@ export default function AuthForm({ register, handleModalClose }) {
         ) : (
           <p>
             No account yet? Click{" "}
-            <button type="button" className="btn-link">
+            <button
+              onClick={() => {
+                flipForm();
+              }}
+              type="button"
+              className="btn-link"
+            >
               here
             </button>{" "}
             to register.
           </p>
         )}
-        {/* {status === "error" && <p>{error.message}</p>} */}
-        <fieldset disabled={status === "loading"}>
+        <fieldset disabled={isLoading} aria-busy={isLoading}>
           <label htmlFor="username">Username</label>
           <input
             type="text"
@@ -88,7 +138,9 @@ export default function AuthForm({ register, handleModalClose }) {
             value={inputs.username}
             onChange={handleChange}
           />
-
+          <ErrorMessage isVisible={errors?.username?.length > 0}>
+            {errors?.username}
+          </ErrorMessage>
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -97,6 +149,13 @@ export default function AuthForm({ register, handleModalClose }) {
             value={inputs.password}
             onChange={handleChange}
           />
+          <ErrorMessage
+            isVisible={
+              errors?.password?.length > 0 || errors?.network?.length > 0
+            }
+          >
+            {errors?.password || errors?.network}
+          </ErrorMessage>
         </fieldset>
         <button
           disabled={isLoading}
@@ -112,5 +171,6 @@ export default function AuthForm({ register, handleModalClose }) {
 
 AuthForm.propTypes = {
   register: PropTypes.bool.isRequired,
-  handleModalClose: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  flipForm: PropTypes.func.isRequired,
 };

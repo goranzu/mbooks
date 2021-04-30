@@ -1,0 +1,8 @@
+.message {
+  color: red;
+  transition: opacity 0.1s linear;
+}
+
+.message[aria-disabled="true"] {
+  opacity: 0;
+}

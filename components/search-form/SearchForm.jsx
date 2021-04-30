@@ -1,9 +1,12 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 import useForm from "../../lib/useForm";
+import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./search-form.module.css";
 
 export default function SearchForm({ handleSubmit }) {
-  const { inputs, handleChange } = useForm({ title: "enders game" });
+  const { inputs, handleChange } = useForm({ title: "" });
+  const [errors, setErrors] = useState(null);
 
   return (
     <>
@@ -11,8 +14,12 @@ export default function SearchForm({ handleSubmit }) {
         className={`${styles.form} center`}
         onSubmit={(e) => {
           e.preventDefault();
+          setErrors(null);
           try {
-            if (!inputs.title) return;
+            if (inputs.title.length === 0) {
+              setErrors({ title: ["This is an required field."] });
+              return;
+            }
             // Mutate function from parent component
             handleSubmit(inputs);
           } catch (error) {
@@ -31,6 +38,9 @@ export default function SearchForm({ handleSubmit }) {
             name="title"
             id="title"
           />
+          <ErrorMessage isVisible={errors?.title.length > 0}>
+            {errors?.title}
+          </ErrorMessage>
           <button type="submit">Search</button>
         </fieldset>
       </form>
