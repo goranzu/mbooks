@@ -9,11 +9,13 @@ const navItems = [
   },
   {
     label: "Reading List",
-    path: "/reading-list",
+    path: "/books",
+    query: "reading",
   },
   {
     label: "Finished Reading",
-    path: "/finished",
+    path: "/books",
+    query: "finished",
   },
 ];
 
@@ -25,13 +27,23 @@ export default function Sidebar() {
         <ul>
           {navItems.map((item) => {
             const className =
-              router.pathname === item.path
+              router.asPath ===
+              (router.query.list
+                ? `${item.path}?list=${item.query}`
+                : `${item.path}`)
                 ? `${styles.nav_item} ${styles.active}`
                 : `${styles.nav_item}`;
 
             return (
               <li key={item.label} className={className}>
-                <Link href={item.path}>{item.label}</Link>
+                <Link
+                  href={{
+                    pathname: item.path,
+                    query: item.query ? { list: item.query } : null,
+                  }}
+                >
+                  {item.label}
+                </Link>
               </li>
             );
           })}
