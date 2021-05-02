@@ -15,7 +15,10 @@ export default function SearchCard({
       <section className={styles.text}>
         <header>
           <h2 className="fs-100">{title}</h2>
-          <small>({publicationYear})</small>
+          {publicationYear > 0 ? (
+            <small>({publicationYear})</small>
+          ) : // <small>Publication year unkown.</small>
+          null}
         </header>
         <p>by {authorName}</p>
         <p>rating: {averageRating}</p>

@@ -1,16 +1,16 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import PropTypes from "prop-types";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/globals.css";
 import "../styles/reset.css";
 import "../styles/typography.css";
 import "../styles/utils.css";
-import { AuthContext, AuthProvider } from "../context/AuthContext";
+import { AuthProvider, useAuthContext } from "../context/AuthContext";
 
 const AppRoutes = ({ component: Component, pageProps }) => {
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
 
   if (authContext.authState == null) {
     return <p>loading...</p>;

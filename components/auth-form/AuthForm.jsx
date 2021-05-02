@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import * as yup from "yup";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import useForm from "../../lib/useForm";
 import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./auth-form.module.css";
@@ -20,7 +20,7 @@ export default function AuthForm({ register, closeModal, flipForm }) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState(null);
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
   const router = useRouter();
 
   const endpoint = register ? "/api/auth/register" : "/api/auth/login";

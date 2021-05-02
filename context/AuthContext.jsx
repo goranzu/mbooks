@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { privateFetch, publicFetch } from "../lib/fetch";
@@ -68,4 +68,8 @@ AuthProvider.propTypes = {
   children: PropTypes.any,
 };
 
-export { AuthContext, AuthProvider };
+function useAuthContext() {
+  return useContext(AuthContext);
+}
+
+export { useAuthContext, AuthProvider };

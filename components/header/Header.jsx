@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import styles from "./header.module.css";
 
 export default function Header() {
-  const { authState, logout } = useContext(AuthContext);
+  const { authState, logout } = useAuthContext();
 
   return (
     <header className={styles.header}>

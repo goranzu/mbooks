@@ -1,17 +1,16 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
 import { useQueryClient } from "react-query";
 import BooksGrid from "../components/books-grid/BooksGrid";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
-import { AuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
 import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
 import { useAddBookToReadingList } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
 
 export default function SearchPage() {
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -62,7 +61,7 @@ export default function SearchPage() {
                   Add to reading list
                 </button>
               ) : (
-                <p style={{ fontWeight: "bold" }}>Already on reading list</p>
+                <p style={{ fontWeight: "bold" }}>On your list.</p>
               )}
             </SearchCard>
           ))}
