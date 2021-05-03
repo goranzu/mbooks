@@ -32,16 +32,15 @@ export default function ReadingListPage() {
             data.map((book) => (
               <SearchCard
                 authorName={book.authorName}
-                averageRating={book.averageRating}
                 imageUrl={book.imageUrl}
-                publicationYear={book.publicationYear}
+                publishedDate={book.publishedDate}
                 title={book.title}
                 key={book.id}
               >
                 <div>
                   <button
                     onClick={() =>
-                      mutate({ id: book.id, goodreadsId: book.goodreadsId })
+                      mutate({ id: book.id, googleId: book.googleId })
                     }
                     disabled={
                       mutationSatus === "loading" ||
@@ -59,7 +58,7 @@ export default function ReadingListPage() {
                       onClick={() => {
                         markAsFinished.mutate({
                           id: book.id,
-                          goodreadsId: book.goodreadsId,
+                          googleId: book.googleId,
                         });
                       }}
                     >

@@ -5,8 +5,7 @@ export default function SearchCard({
   title,
   imageUrl,
   authorName,
-  publicationYear,
-  averageRating,
+  publishedDate,
   children,
 }) {
   return (
@@ -15,13 +14,10 @@ export default function SearchCard({
       <section className={styles.text}>
         <header>
           <h2 className="fs-100">{title}</h2>
-          {publicationYear > 0 ? (
-            <small>({publicationYear})</small>
-          ) : // <small>Publication year unkown.</small>
-          null}
+
+          <small>{publishedDate}</small>
         </header>
         <p>by {authorName}</p>
-        <p>rating: {averageRating}</p>
       </section>
       {children}
     </article>
@@ -32,7 +28,6 @@ SearchCard.propTypes = {
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string,
   authorName: PropTypes.string.isRequired,
-  publicationYear: PropTypes.number,
-  averageRating: PropTypes.number,
+  publishedDate: PropTypes.string,
   children: PropTypes.any,
 };

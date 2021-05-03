@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@prisma/client": "^2.20.1",
+    "@prisma/client": "^2.21.2",
     "argon2": "^0.27.2",
     "axios": "^0.21.1",
     "cookie": "^0.4.1",
@@ -29,6 +29,6 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prisma": "^2.20.1"
+    "prisma": "^2.21.2"
   }
 }

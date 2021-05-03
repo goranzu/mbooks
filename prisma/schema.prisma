@@ -2,47 +2,46 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 model User {
-  id        String            @id @default(cuid())
-  username  String
-  password  String
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  books     UsersReadingLog[]
+    id        String            @id @default(cuid())
+    username  String
+    password  String
+    createdAt DateTime          @default(now())
+    updatedAt DateTime          @updatedAt
+    books     UsersReadingLog[]
 }
 
 model Book {
-  id              String            @id @default(cuid())
-  goodreadsId     String            @unique
-  title           String
-  authorName      String
-  imageUrl        String
-  averageRating   Float
-  publicationYear Int
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  reader          UsersReadingLog[]
+    id            String            @id @default(cuid())
+    googleId      String            @unique
+    title         String
+    authorName    String
+    imageUrl      String?
+    publishedDate String?
+    createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+    reader        UsersReadingLog[]
 }
 
 model UsersReadingLog {
-  user   User       @relation(fields: [userId], references: [id])
-  userId String
-  book   Book       @relation(fields: [bookId], references: [id])
-  bookId String
-  status BookStatus @default(PLAN_TO_READ)
+    user   User       @relation(fields: [userId], references: [id])
+    userId String
+    book   Book       @relation(fields: [bookId], references: [id])
+    bookId String
+    status BookStatus @default(PLAN_TO_READ)
 
-  @@id([userId, bookId, status])
+    @@id([userId, bookId, status])
 }
 
 enum BookStatus {
-  PLAN_TO_READ
-  FINISHED_READING
+    PLAN_TO_READ
+    FINISHED_READING
 }

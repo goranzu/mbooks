@@ -26,14 +26,19 @@ export default function SearchPage() {
     return <></>;
   }
 
-  function handleAddToReadingList(book) {
+  function handleAddToReadingList({
+    googleId,
+    title,
+    authorName,
+    imageUrl,
+    publishedDate,
+  }) {
     mutateBook({
-      goodreadsId: book.goodreadsId,
-      title: book.title,
-      authorName: book.author.name,
-      imageUrl: book.imageUrl,
-      averageRating: book.averageRating,
-      publicationYear: book.publicationYear,
+      googleId,
+      title,
+      authorName,
+      imageUrl,
+      publishedDate,
     });
   }
 
@@ -44,24 +49,31 @@ export default function SearchPage() {
       {status === "error" && <p>Something went wrong please try again later</p>}
       {status === "success" ? (
         <BooksGrid>
-          {data.data.data.books.map((book) => (
+          {data.data.items.map(({ id, volumeInfo }) => (
             <SearchCard
-              key={book.goodreadsId}
-              authorName={book.author?.name}
-              title={book.title}
-              imageUrl={book.imageUrl}
-              publicationYear={Number(book.publicationYear)}
-              averageRating={Number(book.averageRating)}
+              key={id}
+              imageUrl={volumeInfo.imageLinks?.smallThumbnail}
+              title={volumeInfo.title}
+              publishedDate={volumeInfo.publishedDate}
+              authorName={volumeInfo.authors[0]}
             >
-              {!usersBooks?.includes(book.goodreadsId) ? (
+              {usersBooks.includes(id) ? (
+                <p>On your list.</p>
+              ) : (
                 <button
                   disabled={bookStatus === "loading"}
-                  onClick={() => handleAddToReadingList(book)}
+                  onClick={() => {
+                    handleAddToReadingList({
+                      googleId: id,
+                      title: volumeInfo.title,
+                      authorName: volumeInfo.authors[0],
+                      imageUrl: volumeInfo.imageLinks?.smallThumbnail,
+                      publishedDate: volumeInfo.publishedDate,
+                    });
+                  }}
                 >
                   Add to reading list
                 </button>
-              ) : (
-                <p style={{ fontWeight: "bold" }}>On your list.</p>
               )}
             </SearchCard>
           ))}
