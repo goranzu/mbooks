@@ -36,6 +36,7 @@ export default function ReadingListPage() {
                 publishedDate={book.publishedDate}
                 title={book.title}
                 key={book.id}
+                googleId={book.googleId}
               >
                 <div>
                   <button

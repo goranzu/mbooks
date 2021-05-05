@@ -5,7 +5,7 @@ import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./search-form.module.css";
 
 export default function SearchForm({ handleSubmit }) {
-  const { inputs, handleChange } = useForm({ title: "" });
+  const { inputs, handleChange } = useForm({ searchterm: "" });
   const [errors, setErrors] = useState(null);
 
   return (
@@ -16,8 +16,8 @@ export default function SearchForm({ handleSubmit }) {
           e.preventDefault();
           setErrors(null);
           try {
-            if (inputs.title.length === 0) {
-              setErrors({ title: ["This is an required field."] });
+            if (inputs.searchterm.length === 0) {
+              setErrors({ searchterm: ["This is an required field."] });
               return;
             }
             // Mutate function from parent component
@@ -28,18 +28,16 @@ export default function SearchForm({ handleSubmit }) {
         }}
       >
         <fieldset>
-          <label className="semi-bold" htmlFor="title">
-            Title
-          </label>
+          <label htmlFor="searchterm">Searchterm:</label>
           <input
-            value={inputs.title}
+            value={inputs.searchterm}
             onChange={handleChange}
             type="text"
-            name="title"
-            id="title"
+            name="searchterm"
+            id="searchterm"
           />
-          <ErrorMessage isVisible={errors?.title.length > 0}>
-            {errors?.title}
+          <ErrorMessage isVisible={errors?.searchterm.length > 0}>
+            {errors?.searchterm}
           </ErrorMessage>
           <button type="submit">Search</button>
         </fieldset>

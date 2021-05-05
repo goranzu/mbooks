@@ -55,7 +55,8 @@ export default function SearchPage() {
               imageUrl={volumeInfo.imageLinks?.smallThumbnail}
               title={volumeInfo.title}
               publishedDate={volumeInfo.publishedDate}
-              authorName={volumeInfo.authors[0]}
+              authorName={volumeInfo.authors ? volumeInfo.authors[0] : "unkown"}
+              googleId={id}
             >
               {usersBooks.includes(id) ? (
                 <p>On your list.</p>
@@ -66,7 +67,9 @@ export default function SearchPage() {
                     handleAddToReadingList({
                       googleId: id,
                       title: volumeInfo.title,
-                      authorName: volumeInfo.authors[0],
+                      authorName: volumeInfo.authors
+                        ? volumeInfo.authors[0]
+                        : "unkown",
                       imageUrl: volumeInfo.imageLinks?.smallThumbnail,
                       publishedDate: volumeInfo.publishedDate,
                     });
