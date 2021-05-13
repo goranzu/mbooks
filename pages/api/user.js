@@ -7,19 +7,12 @@ const handler = nc({ onError });
 
 export default handler.use(protect).get(async (req, res, next) => {
   try {
-    // const user = await prisma.user.findUnique({
-    //   where: { id: req.user.sub },
-    //   include: {
-    //     books: { include: { book: true } },
-    //   },
-    // });
-
     const user = await findUserById(req.user.sub);
 
     const userInfo = {
       id: user.id,
       username: user.username,
-      books: user.books.map((b) => b.book.goodreadsId),
+      books: user.books.map((b) => b.book.googleId),
     };
 
     const expiresAt = req.user.exp;
@@ -30,7 +23,5 @@ export default handler.use(protect).get(async (req, res, next) => {
     return;
   } catch (error) {
     next(new UnauthorizedError());
-    // console.error(error);
-    // res.status(401).json({ error: { message: "Not Authorized" } });
   }
 });

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import BooksGrid from "../components/books-grid/BooksGrid";
+import Button from "../components/button/Button";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
@@ -58,10 +59,10 @@ export default function SearchPage() {
               authorName={volumeInfo.authors ? volumeInfo.authors[0] : "unkown"}
               googleId={id}
             >
-              {usersBooks.includes(id) ? (
+              {usersBooks?.includes(id) ? (
                 <p>On your list.</p>
               ) : (
-                <button
+                <Button
                   disabled={bookStatus === "loading"}
                   onClick={() => {
                     handleAddToReadingList({
@@ -76,7 +77,7 @@ export default function SearchPage() {
                   }}
                 >
                   Add to reading list
-                </button>
+                </Button>
               )}
             </SearchCard>
           ))}

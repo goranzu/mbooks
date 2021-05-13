@@ -1,0 +1,16 @@
+.button,
+.outline {
+  border: none;
+  background: var(--clr-accent-100);
+  padding: 0.5em;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.outline {
+  background-color: transparent;
+  color: black;
+  border-color: var(--clr-accent-100);
+}

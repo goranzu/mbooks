@@ -8,6 +8,7 @@ import {
   useAddBookToFinishedList,
 } from "../lib/useBook";
 import { useAuthContext } from "../context/AuthContext";
+import Button from "../components/button/Button";
 
 export default function ReadingListPage() {
   const authContext = useAuthContext();
@@ -38,8 +39,14 @@ export default function ReadingListPage() {
                 key={book.id}
                 googleId={book.googleId}
               >
-                <div>
-                  <button
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
                     onClick={() =>
                       mutate({ id: book.id, googleId: book.googleId })
                     }
@@ -48,10 +55,11 @@ export default function ReadingListPage() {
                       markAsFinished.status === "loading"
                     }
                   >
-                    Remove Book
-                  </button>
+                    Remove
+                  </Button>
                   {router.asPath.includes("reading") && (
-                    <button
+                    <Button
+                      variant="outline"
                       disabled={
                         mutationSatus === "loading" ||
                         markAsFinished.status === "loading"
@@ -63,8 +71,8 @@ export default function ReadingListPage() {
                         });
                       }}
                     >
-                      Finished Reading.
-                    </button>
+                      Finished
+                    </Button>
                   )}
                 </div>
               </SearchCard>
