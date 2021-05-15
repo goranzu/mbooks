@@ -9,7 +9,7 @@ function Page({ children }) {
       <Header />
       <main className={styles.wrapper}>
         <Sidebar />
-        <section>{children}</section>
+        {children}
       </main>
     </>
   );
