@@ -15,12 +15,14 @@
   --fs-800: calc(var(--fs-700) * var(--scale));
   --fs-900: calc(var(--fs-800) * var(--scale));
 
-  --crl-primary-100: #fff2dc;
-  --crl-primary-200: #e3d3b8;
-  --clr-accent-100: #ff8345;
-  --clr-accent-200: #fcb48f;
+  --clr-100: #88c0d0;
+  --clr-200: #81a1c1;
+  --clr-300: #eceff4;
+  --clr-400: #d8dee9;
+  --clr-500: #2e3440;
 
-  --background-clr: var(--crl-primary-100);
+  --text-color: var(--clr-500);
+  --background-clr: #fff;
 }
 
 body {
@@ -28,13 +30,14 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: var(--fs-400);
   background-color: var(--background-clr);
+  color: var(--text-color);
 }
 
 .btn {
-  background-color: var(--clr-accent-100);
+  background-color: var(--clr-100);
   padding: 0.5em;
   border-radius: 5px;
-  border: 1px solid var(--clr-accent-100);
+  border: 1px solid var(--clr-100);
   color: white;
   text-transform: uppercase;
   font-weight: 700;
@@ -48,7 +51,7 @@ body {
 }
 
 .btn-link {
-  color: var(--clr-accent-100);
+  color: var(--clr-100);
   text-decoration: underline;
   padding: 0;
   margin: 0;

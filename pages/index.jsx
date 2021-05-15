@@ -51,9 +51,6 @@ export default function Home() {
             </button>
           </div>
         </section>
-        <div className={styles.imageWrapper}>
-          <img src="/bag.png" alt="bag" />
-        </div>
       </main>
     </>
   );

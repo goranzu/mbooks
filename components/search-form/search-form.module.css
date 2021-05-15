@@ -26,13 +26,13 @@
 }
 
 .form input {
-  background-color: var(--crl-primary-200);
+  background-color: var(--clr-400);
   border: none;
 }
 
 .form button[type="submit"] {
   border: none;
-  background-color: var(--clr-accent-100);
+  background-color: var(--clr-100);
   color: white;
   font-weight: 600;
   justify-self: start;

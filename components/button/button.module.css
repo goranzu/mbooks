@@ -1,7 +1,7 @@
 .button,
 .outline {
   border: none;
-  background: var(--clr-accent-100);
+  background: var(--clr-100);
   padding: 0.5em;
   color: white;
   font-weight: bold;
@@ -12,5 +12,5 @@
 .outline {
   background-color: transparent;
   color: black;
-  border-color: var(--clr-accent-100);
+  border-color: var(--clr-100);
 }

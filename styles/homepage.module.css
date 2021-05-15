@@ -1,12 +1,14 @@
 .wrapper {
-  text-align: center;
+  /* text-align: center; */
   padding: 3em 1em 0;
   max-width: 88.75rem;
   margin-left: auto;
   margin-right: auto;
+  /* height: 100vh; */
 }
 
 .text {
+  margin-top: 5em;
   max-width: 38rem;
   margin-left: auto;
   margin-right: auto;
@@ -37,36 +39,9 @@
   margin-top: 1em;
 }
 
-.imageWrapper {
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 @media (min-width: 62.5rem) {
-  .wrapper {
-    text-align: left;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-  }
-
-  .text {
-    margin-left: 0;
-  }
-
   .buttons {
-    text-align: center;
     display: flex;
-    max-width: 14.5rem;
-    margin-left: 0;
-    gap: 1rem;
-  }
-
-  .buttons button {
-    margin-top: 0;
-    margin-left: 0;
-    padding: 0.5em 1.5em;
   }
 
   .buttons > button + button {
