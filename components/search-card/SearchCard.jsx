@@ -9,13 +9,14 @@ export default function SearchCard({
   publishedDate,
   children,
   googleId,
+  list,
 }) {
   return (
     <article className={`${styles.card} center fs-100`}>
       <img src={imageUrl} alt={title} />
       <section className={styles.text}>
         <header>
-          <Link href={`/books/${googleId}`}>
+          <Link href={`/books/${list}/${googleId}`}>
             <a>
               <h2 className="fs-100">{title}</h2>
             </a>
@@ -35,5 +36,6 @@ SearchCard.propTypes = {
   authorName: PropTypes.string.isRequired,
   publishedDate: PropTypes.string,
   googleId: PropTypes.string,
+  list: PropTypes.string,
   children: PropTypes.any,
 };

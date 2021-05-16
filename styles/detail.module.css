@@ -1,5 +1,4 @@
 .detail {
-  /* border: 2px solid black; */
   margin-left: auto;
   margin-right: auto;
   text-align: left;
@@ -25,4 +24,25 @@
 
 .description > * + * {
   margin-top: 0;
+}
+
+.notes {
+  margin-top: 2em;
+}
+
+.notes p {
+  font-weight: bold;
+}
+
+.notes textarea {
+  width: 100%;
+  background-color: var(--clr-300);
+  padding: 1em;
+}
+
+.notes button[type="submit"] {
+  color: white;
+  background-color: var(--clr-100);
+  border: none;
+  padding: 0.5em 1em;
 }

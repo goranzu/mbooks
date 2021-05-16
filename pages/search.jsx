@@ -8,6 +8,7 @@ import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
 import { useAuthContext } from "../context/AuthContext";
 import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
+import { formatDate } from "../lib/formatDate";
 import { useAddBookToReadingList } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
 
@@ -56,7 +57,7 @@ export default function SearchPage() {
               key={id}
               imageUrl={volumeInfo.imageLinks?.smallThumbnail}
               title={volumeInfo.title}
-              publishedDate={volumeInfo.publishedDate}
+              publishedDate={formatDate(volumeInfo.publishedDate)}
               authorName={volumeInfo.authors ? volumeInfo.authors[0] : "unkown"}
               googleId={id}
             >

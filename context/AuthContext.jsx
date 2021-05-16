@@ -17,7 +17,6 @@ function AuthProvider({ children }) {
     (async function () {
       try {
         const { data } = await privateFetch().get("/user");
-        console.log(data);
         setAuthState({ user: data.data.user, expiresAt: data.data.expiresAt });
         queryClient.setQueryData(USER_BOOKS_QUERY_KEY, data.data.user.books);
       } catch (error) {

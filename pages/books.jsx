@@ -10,6 +10,7 @@ import {
 import { useAuthContext } from "../context/AuthContext";
 import Button from "../components/button/Button";
 import Spinner from "../components/loading-spinner/Spinner";
+import { formatDate } from "../lib/formatDate";
 
 export default function ReadingListPage() {
   const authContext = useAuthContext();
@@ -35,10 +36,11 @@ export default function ReadingListPage() {
               <SearchCard
                 authorName={book.authorName}
                 imageUrl={book.imageUrl}
-                publishedDate={book.publishedDate}
+                publishedDate={formatDate(book.publishedDate)}
                 title={book.title}
                 key={book.id}
                 googleId={book.googleId}
+                list={list}
               >
                 <div
                   style={{
