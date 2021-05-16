@@ -1,5 +1,6 @@
 import purify from "dompurify";
 import { useRouter } from "next/router";
+import Spinner from "../../components/loading-spinner/Spinner";
 import Page from "../../components/page/Page";
 import { useGetBookDetails } from "../../lib/useBook";
 import styles from "../../styles/detail.module.css";
@@ -12,7 +13,7 @@ export default function BookDetailsPage() {
   return (
     <Page>
       <section className={styles.detail}>
-        {status === "loading" && <p>Loading...</p>}
+        {status === "loading" && <Spinner />}
         {status === "error" && <p>Something went wrong...</p>}
         {status === "success" && (
           <>

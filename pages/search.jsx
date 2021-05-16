@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import BooksGrid from "../components/books-grid/BooksGrid";
 import Button from "../components/button/Button";
+import Spinner from "../components/loading-spinner/Spinner";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
@@ -46,7 +47,7 @@ export default function SearchPage() {
   return (
     <Page>
       <SearchForm handleSubmit={mutate} />
-      {status === "loading" && <p>Loading...</p>}
+      {status === "loading" && <Spinner />}
       {status === "error" && <p>Something went wrong please try again later</p>}
       {status === "success" ? (
         <BooksGrid>

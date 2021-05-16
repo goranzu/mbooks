@@ -9,6 +9,7 @@ import {
 } from "../lib/useBook";
 import { useAuthContext } from "../context/AuthContext";
 import Button from "../components/button/Button";
+import Spinner from "../components/loading-spinner/Spinner";
 
 export default function ReadingListPage() {
   const authContext = useAuthContext();
@@ -25,7 +26,7 @@ export default function ReadingListPage() {
 
   return (
     <Page>
-      {status === "loading" && <p>Loading...</p>}
+      {status === "loading" && <Spinner />}
       {status === "error" && <p>{error.message}</p>}
       {status === "success" && (
         <BooksGrid>

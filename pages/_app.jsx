@@ -8,12 +8,13 @@ import "../styles/reset.css";
 import "../styles/typography.css";
 import "../styles/utils.css";
 import { AuthProvider, useAuthContext } from "../context/AuthContext";
+import Spinner from "../components/loading-spinner/Spinner";
 
 const AppRoutes = ({ component: Component, pageProps }) => {
   const authContext = useAuthContext();
 
   if (authContext.authState == null) {
-    return <p>loading...</p>;
+    return <Spinner />;
   }
 
   return <Component {...pageProps} />;

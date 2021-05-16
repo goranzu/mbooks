@@ -17,6 +17,12 @@
   gap: 2rem;
 }
 
+.nav li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .nav_item a {
   color: inherit;
   text-decoration: none;
@@ -39,10 +45,14 @@
     text-align: left;
     border-bottom: none;
     border-right: 1px solid black;
-    grid-row: 1 / -1;
+    grid-row: 1 / 10;
   }
 
   .nav ul {
     flex-direction: column;
+  }
+
+  .nav li {
+    display: unset;
   }
 }
