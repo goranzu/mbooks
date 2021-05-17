@@ -9,6 +9,7 @@ import "../styles/typography.css";
 import "../styles/utils.css";
 import { AuthProvider, useAuthContext } from "../context/AuthContext";
 import Spinner from "../components/loading-spinner/Spinner";
+import { ModalProvider } from "../context/ModalContext";
 
 const AppRoutes = ({ component: Component, pageProps }) => {
   const authContext = useAuthContext();
@@ -29,11 +30,13 @@ function MyApp({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClientRef.current}>
       <AuthProvider>
-        <Hydrate state={pageProps.dehydratedState}>
-          <ReactQueryDevtools />
-          {/* <Component {...pageProps} /> */}
-          <AppRoutes component={Component} pageProps={pageProps} />
-        </Hydrate>
+        <ModalProvider>
+          <Hydrate state={pageProps.dehydratedState}>
+            <ReactQueryDevtools />
+            {/* <Component {...pageProps} /> */}
+            <AppRoutes component={Component} pageProps={pageProps} />
+          </Hydrate>
+        </ModalProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

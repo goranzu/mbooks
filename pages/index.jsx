@@ -2,18 +2,18 @@ import { useState } from "react";
 import Modal from "../components/modal/Modal";
 import AuthForm from "../components/auth-form/AuthForm";
 import styles from "../styles/homepage.module.css";
+import { useModal } from "../context/ModalContext";
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
+  const { isModalOpen, openModal } = useModal();
   const [register, setRegister] = useState(false);
 
   return (
     <>
-      {showModal && (
+      {isModalOpen && (
         <Modal>
           <AuthForm
             register={register}
-            closeModal={() => setShowModal(false)}
             flipForm={() => setRegister(!register)}
           />
         </Modal>
@@ -35,7 +35,7 @@ export default function Home() {
               className="btn"
               onClick={() => {
                 setRegister(true);
-                setShowModal(true);
+                openModal();
               }}
             >
               Register
@@ -43,7 +43,7 @@ export default function Home() {
             <button
               onClick={() => {
                 setRegister(false);
-                setShowModal(true);
+                openModal();
               }}
               className="btn btn--outline"
             >

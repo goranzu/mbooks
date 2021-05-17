@@ -9,11 +9,12 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <title>Mbooks</title>
+        </Head>
         <body>
           <Main />
           <NextScript />
-          <div id="modal-root"></div>
         </body>
       </Html>
     );

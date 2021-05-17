@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useState } from "react";
 import * as yup from "yup";
 import { useAuthContext } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
+import { formatError } from "../../lib/formatError";
+import { useAuthReducer } from "../../lib/useAuthReducer";
 import useForm from "../../lib/useForm";
 import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./auth-form.module.css";
@@ -13,17 +15,54 @@ const authSchema = yup.object().shape({
   password: yup.string().min(4).required(),
 });
 
-export default function AuthForm({ register, closeModal, flipForm }) {
+export default function AuthForm({ register, flipForm }) {
   const { inputs, handleChange } = useForm({
     username: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState(null);
+  const [state, stateFunctions] = useAuthReducer();
   const authContext = useAuthContext();
+  const { closeModal } = useModal();
   const router = useRouter();
 
   const endpoint = register ? "/api/auth/register" : "/api/auth/login";
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const { username, password } = inputs;
+
+    try {
+      await authSchema.validate({ username, password }, { abortEarly: false });
+
+      stateFunctions.setLoading();
+
+      const { data } = await axios.post(endpoint, { username, password });
+      authContext.setAuthState(data.data);
+
+      stateFunctions.setResolved();
+      closeModal();
+      router.push("/search");
+    } catch (error) {
+      console.error(error);
+
+      // network error handling
+      if (error.response) {
+        const { status } = error.response;
+        stateFunctions.setErrors({
+          network: [
+            status === 401
+              ? "Invalid credentials. Please try again."
+              : "Something went wrong. Please try again.",
+          ],
+        });
+      }
+
+      // Validation error handling
+      if (error.inner) {
+        stateFunctions.setErrors(formatError(error.inner));
+      }
+    }
+  }
 
   return (
     <>
@@ -44,61 +83,7 @@ export default function AuthForm({ register, closeModal, flipForm }) {
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      <form
-        className={styles.form}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setErrors(null);
-          const { username, password } = inputs;
-
-          try {
-            await authSchema.validate(
-              { username, password },
-              { abortEarly: false },
-            );
-
-            setIsLoading(true);
-
-            const { data } = await axios.post(endpoint, { username, password });
-            authContext.setAuthState(data.data);
-
-            setIsLoading(false);
-            router.push("/search");
-          } catch (error) {
-            setIsLoading(false);
-            console.error(error);
-
-            // network error handling
-            if (error.response) {
-              if (error.response.status === 401) {
-                setErrors({
-                  network: ["Invalid credentials. Please try again."],
-                });
-              } else {
-                setErrors({
-                  network: ["Something went wrong. Please try again."],
-                });
-              }
-            }
-
-            // Validation error handling
-            if (error.inner) {
-              setErrors(
-                error.inner.reduce((acc, err) => {
-                  if (!Array.isArray(acc[err.path])) {
-                    acc[err.path] = [];
-                  }
-
-                  acc[err.path].push(err.message);
-
-                  return acc;
-                }, {}),
-              );
-            }
-          }
-        }}
-        method="POST"
-      >
+      <form className={styles.form} onSubmit={handleSubmit} method="POST">
         <h2>{register ? "Create an account." : "Sign into your account."}</h2>
         {register ? (
           <p>
@@ -106,6 +91,7 @@ export default function AuthForm({ register, closeModal, flipForm }) {
             <button
               onClick={() => {
                 flipForm();
+                stateFunctions.setIdle();
               }}
               type="button"
               className="btn-link"
@@ -120,6 +106,7 @@ export default function AuthForm({ register, closeModal, flipForm }) {
             <button
               onClick={() => {
                 flipForm();
+                stateFunctions.setIdle();
               }}
               type="button"
               className="btn-link"
@@ -129,7 +116,10 @@ export default function AuthForm({ register, closeModal, flipForm }) {
             to register.
           </p>
         )}
-        <fieldset disabled={isLoading} aria-busy={isLoading}>
+        <fieldset
+          disabled={state.status === "loading"}
+          aria-busy={state.status === "loading"}
+        >
           <label htmlFor="username">Username</label>
           <input
             type="text"
@@ -138,8 +128,8 @@ export default function AuthForm({ register, closeModal, flipForm }) {
             value={inputs.username}
             onChange={handleChange}
           />
-          <ErrorMessage isVisible={errors?.username?.length > 0}>
-            {errors?.username}
+          <ErrorMessage isVisible={state.errors?.username?.length > 0}>
+            {state.errors?.username}
           </ErrorMessage>
           <label htmlFor="password">Password</label>
           <input
@@ -151,14 +141,15 @@ export default function AuthForm({ register, closeModal, flipForm }) {
           />
           <ErrorMessage
             isVisible={
-              errors?.password?.length > 0 || errors?.network?.length > 0
+              state.errors?.password?.length > 0 ||
+              state.errors?.network?.length > 0
             }
           >
-            {errors?.password || errors?.network}
+            {state.errors?.password || state.errors?.network}
           </ErrorMessage>
         </fieldset>
         <button
-          disabled={isLoading}
+          disabled={state.status === "loading"}
           className={register ? "btn" : "btn btn--outline"}
           type="submit"
         >
@@ -171,6 +162,5 @@ export default function AuthForm({ register, closeModal, flipForm }) {
 
 AuthForm.propTypes = {
   register: PropTypes.bool.isRequired,
-  closeModal: PropTypes.func.isRequired,
   flipForm: PropTypes.func.isRequired,
 };

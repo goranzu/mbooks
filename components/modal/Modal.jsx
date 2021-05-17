@@ -1,35 +1,42 @@
 import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
-import { createRef, useEffect } from "react";
+import { useEffect } from "react";
+import FocusLock from "react-focus-lock";
+import { useModal } from "../../context/ModalContext";
 
 export default function Modal({ children }) {
-  // Make sure execution is on the browser
-  let modalRef;
-  let modalRoot;
-  if (typeof window !== "undefined") {
-    modalRoot = document.getElementById("modal-root");
-    modalRef = createRef(null);
-  }
-
-  if (modalRef.current == null) {
-    modalRef.current = document.createElement("div");
-    modalRef.current.classList.add("modal-outer");
-  }
+  const { closeModal } = useModal();
 
   useEffect(() => {
-    modalRoot.appendChild(modalRef.current);
+    function keyListener(e) {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    }
 
-    return () => modalRoot.removeChild(modalRef.current);
-  }, [modalRef]);
+    function onOuterModalClick(e) {
+      if (e.target.classList.contains("modal-outer")) {
+        closeModal();
+      }
+    }
 
-  if (typeof window !== undefined) {
-    return createPortal(
-      <div className="modal-inner">{children}</div>,
-      modalRef.current,
-    );
-  } else {
-    return null;
-  }
+    document.addEventListener("keydown", keyListener);
+    document.addEventListener("click", onOuterModalClick);
+
+    return () => {
+      document.removeEventListener("keydown", keyListener);
+      document.removeEventListener("click", onOuterModalClick);
+    };
+  }, [closeModal]);
+
+  return createPortal(
+    <FocusLock>
+      <div className="modal-outer" role="dialog" aria-modal="true">
+        <div className="modal-inner">{children}</div>
+      </div>
+    </FocusLock>,
+    document.body,
+  );
 }
 
 Modal.propTypes = {
