@@ -18,9 +18,12 @@ export default function SearchPage() {
 
   const queryClient = useQueryClient();
 
-  const usersBooks = queryClient.getQueryData(USER_BOOKS_QUERY_KEY);
+  // Get the id's to check if some of the search results are already on one of the lists
+  let usersBooks = queryClient.getQueryData(USER_BOOKS_QUERY_KEY);
+  // usersBooks = usersBooks?.map((book) => book.id);
 
-  const { mutate, status, data } = useSearch();
+  const { mutate: search, status } = useSearch();
+  const searchResults = queryClient.getQueryData("searchResults");
 
   const { mutate: mutateBook, status: bookStatus } = useAddBookToReadingList();
 
@@ -47,12 +50,13 @@ export default function SearchPage() {
 
   return (
     <Page>
-      <SearchForm handleSubmit={mutate} />
+      <SearchForm onSearch={search} />
       {status === "loading" && <Spinner />}
       {status === "error" && <p>Something went wrong please try again later</p>}
-      {status === "success" ? (
-        <BooksGrid>
-          {data.data.items.map(({ id, volumeInfo }) => (
+      <BooksGrid>
+        {searchResults?.map(({ id, volumeInfo }) => {
+          const bookOnList = usersBooks?.find((book) => book.id === id);
+          return (
             <SearchCard
               key={id}
               imageUrl={volumeInfo.imageLinks?.smallThumbnail}
@@ -60,8 +64,11 @@ export default function SearchPage() {
               publishedDate={formatDate(volumeInfo.publishedDate)}
               authorName={volumeInfo.authors ? volumeInfo.authors[0] : "unkown"}
               googleId={id}
+              list={
+                bookOnList?.status === "PLAN_TO_READ" ? "reading" : "finished"
+              }
             >
-              {usersBooks?.includes(id) ? (
+              {bookOnList ? (
                 <p>On your list.</p>
               ) : (
                 <Button
@@ -82,9 +89,9 @@ export default function SearchPage() {
                 </Button>
               )}
             </SearchCard>
-          ))}
-        </BooksGrid>
-      ) : null}
+          );
+        })}
+      </BooksGrid>
     </Page>
   );
 }

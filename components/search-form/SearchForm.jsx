@@ -1,12 +1,15 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useQueryClient } from "react-query";
 import useForm from "../../lib/useForm";
 import ErrorMessage from "../error-message/ErrorMessage";
 import styles from "./search-form.module.css";
 
-export default function SearchForm({ handleSubmit }) {
+export default function SearchForm({ onSearch }) {
   const { inputs, handleChange } = useForm({ searchterm: "" });
   const [errors, setErrors] = useState(null);
+
+  const queryClient = useQueryClient();
 
   return (
     <>
@@ -20,8 +23,9 @@ export default function SearchForm({ handleSubmit }) {
               setErrors({ searchterm: ["This is an required field."] });
               return;
             }
+            queryClient.setQueryData("searchResults", []);
             // Mutate function from parent component
-            handleSubmit(inputs);
+            onSearch(inputs);
           } catch (error) {
             console.error(error);
           }
@@ -47,5 +51,5 @@ export default function SearchForm({ handleSubmit }) {
 }
 
 SearchForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
 };

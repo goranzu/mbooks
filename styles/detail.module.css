@@ -3,6 +3,7 @@
   margin-right: auto;
   text-align: left;
   margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .detail > * + * {
@@ -40,9 +41,6 @@
   padding: 1em;
 }
 
-.notes button[type="submit"] {
-  color: white;
-  background-color: var(--clr-100);
-  border: none;
-  padding: 0.5em 1em;
+.notes button + button {
+  margin-left: 1em;
 }

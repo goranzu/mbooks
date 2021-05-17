@@ -12,7 +12,11 @@ export default handler.use(protect).get(async (req, res, next) => {
     const userInfo = {
       id: user.id,
       username: user.username,
-      books: user.books.map((b) => b.book.googleId),
+      books: user.books.map((b) => ({
+        id: b.book.googleId,
+        note: b.note,
+        status: b.status,
+      })),
     };
 
     const expiresAt = req.user.exp;

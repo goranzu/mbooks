@@ -50,9 +50,7 @@ export default function ReadingListPage() {
                   }}
                 >
                   <Button
-                    onClick={() =>
-                      mutate({ id: book.id, googleId: book.googleId })
-                    }
+                    onClick={() => mutate({ googleId: book.googleId })}
                     disabled={
                       mutationSatus === "loading" ||
                       markAsFinished.status === "loading"

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
+import { useQueryClient } from "react-query";
 import * as yup from "yup";
 import { useAuthContext } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
@@ -16,7 +17,7 @@ const authSchema = yup.object().shape({
 });
 
 export default function AuthForm({ register, flipForm }) {
-  const { inputs, handleChange } = useForm({
+  const { inputs, handleChange, clearForm } = useForm({
     username: "",
     password: "",
   });
@@ -24,6 +25,7 @@ export default function AuthForm({ register, flipForm }) {
   const authContext = useAuthContext();
   const { closeModal } = useModal();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const endpoint = register ? "/api/auth/register" : "/api/auth/login";
 
@@ -33,6 +35,8 @@ export default function AuthForm({ register, flipForm }) {
 
     try {
       await authSchema.validate({ username, password }, { abortEarly: false });
+
+      queryClient.setQueryData("searchResults", []);
 
       stateFunctions.setLoading();
 
@@ -90,8 +94,9 @@ export default function AuthForm({ register, flipForm }) {
             Already have an account? Click{" "}
             <button
               onClick={() => {
-                flipForm();
+                clearForm();
                 stateFunctions.setIdle();
+                flipForm();
               }}
               type="button"
               className="btn-link"
@@ -105,8 +110,9 @@ export default function AuthForm({ register, flipForm }) {
             No account yet? Click{" "}
             <button
               onClick={() => {
-                flipForm();
+                clearForm();
                 stateFunctions.setIdle();
+                flipForm();
               }}
               type="button"
               className="btn-link"

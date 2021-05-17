@@ -1,30 +1,46 @@
 import purify from "dompurify";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
+import Button from "../../../components/button/Button";
 import Spinner from "../../../components/loading-spinner/Spinner";
 import Page from "../../../components/page/Page";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatDate } from "../../../lib/formatDate";
 import { useAddNoteToBook, useGetBookDetails } from "../../../lib/useBook";
-import useForm from "../../../lib/useForm";
 import styles from "../../../styles/detail.module.css";
 
 export default function BookDetailsPage() {
   const authContext = useAuthContext();
   const router = useRouter();
-  const { inputs, handleChange } = useForm({ note: "" });
 
   const { list, googleId } = router.query;
   const { data, status } = useGetBookDetails(googleId);
   const queryClient = useQueryClient();
   const usersBooks = queryClient.getQueryData("usersBooks");
 
-  const { mutate: addNoteToBook } = useAddNoteToBook(list);
+  const bookOnUsersList = usersBooks?.find((book) => book.id === googleId);
+
+  const { mutate: addNoteToBook, status: addNoteStatus } =
+    useAddNoteToBook(list);
 
   if (!authContext.isAuthenticated()) {
     router.push("/");
     return <></>;
   }
+
+  /*
+  If book is not on reading list option give them an option to add from this page
+  {
+    googleId,
+    title,
+    authorName,
+    imageUrl,
+    publishedDate,
+  }
+
+  and if it is on one of the list give them the option to remove
+  */
+  console.log(data);
 
   return (
     <Page>
@@ -63,28 +79,31 @@ export default function BookDetailsPage() {
             ) : null}
           </>
         )}
-        {status === "success" && usersBooks?.includes(googleId) && (
+        {status === "success" && bookOnUsersList && (
           <div className={styles.notes}>
             <p>Notes</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!inputs.note) {
+                const note = e.target.note.value;
+                if (!note) {
                   return;
                 }
 
-                const { note } = inputs;
                 addNoteToBook({ note, googleId });
               }}
             >
               <textarea
-                value={inputs.note}
-                onChange={handleChange}
+                defaultValue={bookOnUsersList.note || ""}
+                disabled={addNoteStatus === "loading"}
                 name="note"
                 id="note"
                 rows="10"
               ></textarea>
-              <button type="submit">Make Note</button>
+              <Button type="submit">Make Note</Button>
+              <Button variant="outline" type="button">
+                Remove
+              </Button>
             </form>
           </div>
         )}

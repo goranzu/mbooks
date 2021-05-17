@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { privateFetch, publicFetch } from "../lib/fetch";
@@ -13,8 +19,8 @@ function AuthProvider({ children }) {
   const [authState, setAuthState] = useState();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    (async function () {
+  const fetchUserData = useCallback(
+    async function fetchUserData() {
       try {
         const { data } = await privateFetch().get("/user");
         setAuthState({ user: data.data.user, expiresAt: data.data.expiresAt });
@@ -23,8 +29,13 @@ function AuthProvider({ children }) {
         setAuthState({ user: null });
         console.error(error);
       }
-    })();
-  }, [queryClient]);
+    },
+    [queryClient],
+  );
+
+  useEffect(() => {
+    fetchUserData();
+  }, [queryClient, fetchUserData]);
 
   function setAuthInfo({ user, expiresAt }) {
     setAuthState({ user, expiresAt });
@@ -57,6 +68,7 @@ function AuthProvider({ children }) {
         setAuthState: (authInfo) => setAuthInfo(authInfo),
         logout,
         isAuthenticated,
+        fetchUserData,
       }}
     >
       {children}
