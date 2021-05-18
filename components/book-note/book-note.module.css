@@ -1,0 +1,17 @@
+.note {
+  margin-top: 2em;
+}
+
+.note p {
+  font-weight: bold;
+}
+
+.note textarea {
+  width: 100%;
+  background-color: var(--clr-300);
+  padding: 1em;
+}
+
+.note button + button {
+  margin-left: 1em;
+}

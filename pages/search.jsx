@@ -1,21 +1,17 @@
-import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
+import AuthCheck from "../components/AuthCheck";
 import BooksGrid from "../components/books-grid/BooksGrid";
 import Button from "../components/button/Button";
 import Spinner from "../components/loading-spinner/Spinner";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
-import { useAuthContext } from "../context/AuthContext";
 import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
 import { formatDate } from "../lib/formatDate";
 import { useAddBookToReadingList } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
 
 export default function SearchPage() {
-  const authContext = useAuthContext();
-  const router = useRouter();
-
   const queryClient = useQueryClient();
 
   // Get the id's to check if some of the search results are already on one of the lists
@@ -26,11 +22,6 @@ export default function SearchPage() {
   const searchResults = queryClient.getQueryData("searchResults");
 
   const { mutate: mutateBook, status: bookStatus } = useAddBookToReadingList();
-
-  if (!authContext.isAuthenticated()) {
-    router.push("/");
-    return <></>;
-  }
 
   function handleAddToReadingList({
     googleId,
@@ -49,49 +40,59 @@ export default function SearchPage() {
   }
 
   return (
-    <Page>
-      <SearchForm onSearch={search} />
-      {status === "loading" && <Spinner />}
-      {status === "error" && <p>Something went wrong please try again later</p>}
-      <BooksGrid>
-        {searchResults?.map(({ id, volumeInfo }) => {
-          const bookOnList = usersBooks?.find((book) => book.id === id);
-          return (
-            <SearchCard
-              key={id}
-              imageUrl={volumeInfo.imageLinks?.smallThumbnail}
-              title={volumeInfo.title}
-              publishedDate={formatDate(volumeInfo.publishedDate)}
-              authorName={volumeInfo.authors ? volumeInfo.authors[0] : "unkown"}
-              googleId={id}
-              list={
-                bookOnList?.status === "PLAN_TO_READ" ? "reading" : "finished"
-              }
-            >
-              {bookOnList ? (
-                <p>On your list.</p>
-              ) : (
-                <Button
-                  disabled={bookStatus === "loading"}
-                  onClick={() => {
-                    handleAddToReadingList({
-                      googleId: id,
-                      title: volumeInfo.title,
-                      authorName: volumeInfo.authors
-                        ? volumeInfo.authors[0]
-                        : "unkown",
-                      imageUrl: volumeInfo.imageLinks?.smallThumbnail,
-                      publishedDate: volumeInfo.publishedDate,
-                    });
-                  }}
+    <AuthCheck>
+      <>
+        <Page>
+          <SearchForm onSearch={search} />
+          <Spinner show={status === "loading"} />
+          {status === "error" && (
+            <p>Something went wrong please try again later</p>
+          )}
+          <BooksGrid>
+            {searchResults?.map(({ id, volumeInfo }) => {
+              const bookOnList = usersBooks?.find((book) => book.id === id);
+              return (
+                <SearchCard
+                  key={id}
+                  imageUrl={volumeInfo.imageLinks?.smallThumbnail}
+                  title={volumeInfo.title}
+                  publishedDate={formatDate(volumeInfo.publishedDate)}
+                  authorName={
+                    volumeInfo.authors ? volumeInfo.authors[0] : "unkown"
+                  }
+                  googleId={id}
+                  list={
+                    bookOnList?.status === "PLAN_TO_READ"
+                      ? "reading"
+                      : "finished"
+                  }
                 >
-                  Add to reading list
-                </Button>
-              )}
-            </SearchCard>
-          );
-        })}
-      </BooksGrid>
-    </Page>
+                  {bookOnList ? (
+                    <p>On your list.</p>
+                  ) : (
+                    <Button
+                      disabled={bookStatus === "loading"}
+                      onClick={() => {
+                        handleAddToReadingList({
+                          googleId: id,
+                          title: volumeInfo.title,
+                          authorName: volumeInfo.authors
+                            ? volumeInfo.authors[0]
+                            : "unkown",
+                          imageUrl: volumeInfo.imageLinks?.smallThumbnail,
+                          publishedDate: volumeInfo.publishedDate,
+                        });
+                      }}
+                    >
+                      Add to reading list
+                    </Button>
+                  )}
+                </SearchCard>
+              );
+            })}
+          </BooksGrid>
+        </Page>
+      </>
+    </AuthCheck>
   );
 }

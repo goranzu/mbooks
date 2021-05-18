@@ -7,82 +7,78 @@ import {
   useRemoveBookFromReadingList,
   useAddBookToFinishedList,
 } from "../lib/useBook";
-import { useAuthContext } from "../context/AuthContext";
 import Button from "../components/button/Button";
 import Spinner from "../components/loading-spinner/Spinner";
 import { formatDate } from "../lib/formatDate";
+import AuthCheck from "../components/AuthCheck";
 
 export default function ReadingListPage() {
-  const authContext = useAuthContext();
   const router = useRouter();
   const { list } = router.query;
   const { data, error, status } = useGetBooksOnList(list);
   const { status: mutationSatus, mutate } = useRemoveBookFromReadingList(list);
   const markAsFinished = useAddBookToFinishedList();
 
-  if (!authContext.isAuthenticated()) {
-    router.push("/");
-    return <></>;
-  }
-
   return (
-    <Page>
-      {status === "loading" && <Spinner />}
-      {status === "error" && <p>{error.message}</p>}
-      {status === "success" && (
-        <BooksGrid>
-          {data.length > 0 ? (
-            data.map((book) => (
-              <SearchCard
-                authorName={book.authorName}
-                imageUrl={book.imageUrl}
-                publishedDate={formatDate(book.publishedDate)}
-                title={book.title}
-                key={book.id}
-                googleId={book.googleId}
-                list={list}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    justifyContent: "center",
-                  }}
+    <AuthCheck>
+      <Page>
+        <Spinner show={status === "loading"} />
+        {status === "error" && <p>{error.message}</p>}
+        {status === "success" && (
+          <BooksGrid>
+            {data.length > 0 ? (
+              data.map((book) => (
+                <SearchCard
+                  authorName={book.authorName}
+                  imageUrl={book.imageUrl}
+                  publishedDate={formatDate(book.publishedDate)}
+                  title={book.title}
+                  key={book.id}
+                  googleId={book.googleId}
+                  list={list}
                 >
-                  <Button
-                    onClick={() => mutate({ googleId: book.googleId })}
-                    disabled={
-                      mutationSatus === "loading" ||
-                      markAsFinished.status === "loading"
-                    }
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      justifyContent: "center",
+                    }}
                   >
-                    Remove
-                  </Button>
-                  {router.asPath.includes("reading") && (
                     <Button
-                      variant="outline"
+                      onClick={() => mutate({ googleId: book.googleId })}
                       disabled={
                         mutationSatus === "loading" ||
                         markAsFinished.status === "loading"
                       }
-                      onClick={() => {
-                        markAsFinished.mutate({
-                          id: book.id,
-                          googleId: book.googleId,
-                        });
-                      }}
                     >
-                      Finished
+                      Remove
                     </Button>
-                  )}
-                </div>
-              </SearchCard>
-            ))
-          ) : (
-            <p>Nothing here...</p>
-          )}
-        </BooksGrid>
-      )}
-    </Page>
+                    {router.asPath.includes("reading") && (
+                      <Button
+                        variant="outline"
+                        disabled={
+                          mutationSatus === "loading" ||
+                          markAsFinished.status === "loading"
+                        }
+                        onClick={() => {
+                          markAsFinished.mutate({
+                            id: book.id,
+                            googleId: book.googleId,
+                          });
+                        }}
+                      >
+                        Finished
+                      </Button>
+                    )}
+                  </div>
+                </SearchCard>
+              ))
+            ) : (
+              <p>Nothing here...</p>
+            )}
+          </BooksGrid>
+        )}
+      </Page>
+    </AuthCheck>
   );
 }

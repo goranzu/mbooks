@@ -1,16 +1,14 @@
-import purify from "dompurify";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
-import Button from "../../../components/button/Button";
+import AuthCheck from "../../../components/AuthCheck";
+import BookDetail from "../../../components/book-detail/BookDetatil";
+import { BookNote } from "../../../components/book-note/BookNote";
 import Spinner from "../../../components/loading-spinner/Spinner";
 import Page from "../../../components/page/Page";
-import { useAuthContext } from "../../../context/AuthContext";
-import { formatDate } from "../../../lib/formatDate";
-import { useAddNoteToBook, useGetBookDetails } from "../../../lib/useBook";
+import { useGetBookDetails } from "../../../lib/useBook";
 import styles from "../../../styles/detail.module.css";
 
 export default function BookDetailsPage() {
-  const authContext = useAuthContext();
   const router = useRouter();
 
   const { list, googleId } = router.query;
@@ -19,14 +17,6 @@ export default function BookDetailsPage() {
   const usersBooks = queryClient.getQueryData("usersBooks");
 
   const bookOnUsersList = usersBooks?.find((book) => book.id === googleId);
-
-  const { mutate: addNoteToBook, status: addNoteStatus } =
-    useAddNoteToBook(list);
-
-  if (!authContext.isAuthenticated()) {
-    router.push("/");
-    return <></>;
-  }
 
   /*
   If book is not on reading list option give them an option to add from this page
@@ -40,74 +30,48 @@ export default function BookDetailsPage() {
 
   and if it is on one of the list give them the option to remove
   */
-  console.log(data);
+
+  if (status === "success") {
+    // Using var because to escape block scoping
+    var {
+      volumeInfo: {
+        imageLinks,
+        title,
+        subtitle,
+        description,
+        authors,
+        categories,
+        publishedDate,
+      },
+    } = data;
+  }
 
   return (
-    <Page>
-      <section className={styles.detail}>
-        {status === "loading" && <Spinner />}
-        {status === "error" && <p>Something went wrong...</p>}
-        {status === "success" && (
-          <>
-            <div className={styles.header}>
-              <img
-                src={data.volumeInfo.imageLinks?.smallThumbnail}
-                alt={data.volumeInfo.title}
-              />
-              <div className={styles.meta}>
-                <h2>{data.volumeInfo.title}</h2>
-                {data.volumeInfo.subtitle ? (
-                  <p>{data.volumeInfo.subtitle}</p>
-                ) : null}
-                <small>by {data.volumeInfo.authors.join(", ")}</small>
-                <br />
-                <small>{formatDate(data.volumeInfo.publishedDate)}</small>
-                {data.volumeInfo.categories ? (
-                  <p>
-                    Genre: <em>{data.volumeInfo.categories[0]}</em>
-                  </p>
-                ) : null}
-              </div>
-            </div>
-            {data.volumeInfo.description ? (
-              <div
-                className={styles.description}
-                dangerouslySetInnerHTML={{
-                  __html: purify.sanitize(data.volumeInfo.description),
-                }}
-              />
-            ) : null}
-          </>
-        )}
-        {status === "success" && bookOnUsersList && (
-          <div className={styles.notes}>
-            <p>Notes</p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const note = e.target.note.value;
-                if (!note) {
-                  return;
-                }
-
-                addNoteToBook({ note, googleId });
-              }}
-            >
-              <textarea
-                defaultValue={bookOnUsersList.note || ""}
-                disabled={addNoteStatus === "loading"}
-                name="note"
-                id="note"
-                rows="10"
-              ></textarea>
-              <Button type="submit">Make Note</Button>
-              <Button variant="outline" type="button">
-                Remove
-              </Button>
-            </form>
-          </div>
-        )}
-      </section>
-    </Page>
+    <AuthCheck>
+      <Page>
+        <section className={styles.detail}>
+          <Spinner show={status === "loading"} />
+          {status === "error" && <p>Something went wrong...</p>}
+          {status === "success" && (
+            <BookDetail
+              thumbnail={imageLinks?.thumbnail}
+              title={title}
+              subtitle={subtitle}
+              description={description}
+              authors={authors}
+              categories={categories}
+              publishedDate={publishedDate}
+            />
+          )}
+          {status === "success" && bookOnUsersList && (
+            <BookNote
+              googleId={googleId}
+              list={list}
+              defaultNote={bookOnUsersList.note}
+            />
+          )}
+        </section>
+      </Page>
+    </AuthCheck>
   );
 }

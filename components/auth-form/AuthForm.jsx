@@ -134,7 +134,7 @@ export default function AuthForm({ register, flipForm }) {
             value={inputs.username}
             onChange={handleChange}
           />
-          <ErrorMessage isVisible={state.errors?.username?.length > 0}>
+          <ErrorMessage show={state.errors?.username?.length > 0}>
             {state.errors?.username}
           </ErrorMessage>
           <label htmlFor="password">Password</label>
@@ -146,7 +146,7 @@ export default function AuthForm({ register, flipForm }) {
             onChange={handleChange}
           />
           <ErrorMessage
-            isVisible={
+            show={
               state.errors?.password?.length > 0 ||
               state.errors?.network?.length > 0
             }

@@ -40,7 +40,7 @@ export default function SearchForm({ onSearch }) {
             name="searchterm"
             id="searchterm"
           />
-          <ErrorMessage isVisible={errors?.searchterm.length > 0}>
+          <ErrorMessage show={errors?.searchterm.length > 0}>
             {errors?.searchterm}
           </ErrorMessage>
           <button type="submit">Search</button>

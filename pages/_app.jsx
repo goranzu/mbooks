@@ -15,7 +15,7 @@ const AppRoutes = ({ component: Component, pageProps }) => {
   const authContext = useAuthContext();
 
   if (authContext.authState == null) {
-    return <Spinner />;
+    return <Spinner show />;
   }
 
   return <Component {...pageProps} />;

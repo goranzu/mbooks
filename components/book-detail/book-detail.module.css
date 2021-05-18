@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+}
+
+.meta {
+  margin-left: 1em;
+}
+
+.description {
+  margin-top: 1em;
+  max-width: 80ch;
+}
+
+.description > * + * {
+  margin-top: 0;
+}

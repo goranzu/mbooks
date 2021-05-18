@@ -9,38 +9,3 @@
 .detail > * + * {
   margin-top: 0.5em;
 }
-
-.header {
-  display: flex;
-}
-
-.meta {
-  margin-left: 1em;
-}
-
-.description {
-  margin-top: 1em;
-  max-width: 80ch;
-}
-
-.description > * + * {
-  margin-top: 0;
-}
-
-.notes {
-  margin-top: 2em;
-}
-
-.notes p {
-  font-weight: bold;
-}
-
-.notes textarea {
-  width: 100%;
-  background-color: var(--clr-300);
-  padding: 1em;
-}
-
-.notes button + button {
-  margin-left: 1em;
-}
