@@ -28,7 +28,11 @@ ModalProvider.propTypes = {
 };
 
 function useModal() {
-  return useContext(ModalContext);
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error("useModal must be used within the ModalProvider.");
+  }
+  return context;
 }
 
 export { ModalProvider, useModal };
