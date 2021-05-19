@@ -39,6 +39,9 @@ export default function SearchPage() {
     });
   }
 
+  console.log(usersBooks);
+  console.log(searchResults);
+
   return (
     <AuthCheck>
       <>
