@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import PropTypes from "prop-types";
@@ -28,17 +29,22 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <QueryClientProvider client={queryClientRef.current}>
-      <AuthProvider>
-        <ModalProvider>
-          <Hydrate state={pageProps.dehydratedState}>
-            <ReactQueryDevtools />
-            {/* <Component {...pageProps} /> */}
-            <AppRoutes component={Component} pageProps={pageProps} />
-          </Hydrate>
-        </ModalProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <title>mBooks</title>
+      </Head>
+      <QueryClientProvider client={queryClientRef.current}>
+        <AuthProvider>
+          <ModalProvider>
+            <Hydrate state={pageProps.dehydratedState}>
+              <ReactQueryDevtools />
+              {/* <Component {...pageProps} /> */}
+              <AppRoutes component={Component} pageProps={pageProps} />
+            </Hydrate>
+          </ModalProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </>
   );
 }
 

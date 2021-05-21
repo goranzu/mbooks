@@ -1,19 +1,19 @@
 import { useRouter } from "next/router";
-import Page from "../components/page/Page";
-import SearchCard from "../components/search-card/SearchCard";
-import BooksGrid from "../components/books-grid/BooksGrid";
+import Page from "../../components/page/Page";
+import SearchCard from "../../components/search-card/SearchCard";
+import BooksGrid from "../../components/books-grid/BooksGrid";
 import {
   useRemoveBookFromReadingList,
   useAddBookToFinishedList,
   useGetAllBooks,
-} from "../lib/useBook";
-import Button from "../components/button/Button";
-import Spinner from "../components/loading-spinner/Spinner";
-import { formatDate } from "../lib/formatDate";
-import AuthCheck from "../components/AuthCheck";
-import { FINISHED_READING, PLAN_TO_READ } from "../lib/constants";
+} from "../../lib/useBook";
+import Button from "../../components/button/Button";
+import Spinner from "../../components/loading-spinner/Spinner";
+import { formatDate } from "../../lib/formatDate";
+import AuthCheck from "../../components/AuthCheck";
+import { FINISHED_READING, PLAN_TO_READ } from "../../lib/constants";
 
-export default function ReadingListPage() {
+export default function ListPage() {
   const router = useRouter();
   const { list } = router.query;
   const { data, error, status } = useGetAllBooks();
@@ -35,6 +35,11 @@ export default function ReadingListPage() {
     }
   }
 
+  let books = [];
+  if (status === "success") {
+    books = data.filter(filterBooksByStatus);
+  }
+
   return (
     <AuthCheck>
       <Page>
@@ -42,8 +47,8 @@ export default function ReadingListPage() {
         {status === "error" && <p>{error.message}</p>}
         {status === "success" && (
           <BooksGrid>
-            {data.length > 0 ? (
-              data.filter(filterBooksByStatus).map((book) => (
+            {books.length > 0 ? (
+              books.map((book) => (
                 <SearchCard
                   authorName={book.authorName}
                   imageUrl={book.imageUrl}

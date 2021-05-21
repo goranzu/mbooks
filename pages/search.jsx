@@ -6,6 +6,7 @@ import Spinner from "../components/loading-spinner/Spinner";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
+import { FINISHED_READING, PLAN_TO_READ } from "../lib/constants";
 import { formatDate } from "../lib/formatDate";
 import { useAddBookToReadingList, useGetAllBooks } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
@@ -59,9 +60,11 @@ export default function SearchPage() {
                   }
                   googleId={id}
                   list={
-                    bookOnList?.status === "PLAN_TO_READ"
+                    bookOnList?.status === PLAN_TO_READ
                       ? "reading"
-                      : "finished"
+                      : bookOnList?.status === FINISHED_READING
+                      ? "finished"
+                      : null
                   }
                 >
                   {bookOnList ? (
