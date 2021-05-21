@@ -19,19 +19,15 @@ function AuthProvider({ children }) {
   const [authState, setAuthState] = useState();
   const queryClient = useQueryClient();
 
-  const fetchUserData = useCallback(
-    async function fetchUserData() {
-      try {
-        const { data } = await privateFetch().get("/user");
-        setAuthState({ user: data.data.user, expiresAt: data.data.expiresAt });
-        queryClient.setQueryData(USER_BOOKS_QUERY_KEY, data.data.user.books);
-      } catch (error) {
-        setAuthState({ user: null });
-        console.error(error);
-      }
-    },
-    [queryClient],
-  );
+  const fetchUserData = useCallback(async function fetchUserData() {
+    try {
+      const { data } = await privateFetch().get("/user");
+      setAuthState({ user: data.data.user, expiresAt: data.data.expiresAt });
+    } catch (error) {
+      setAuthState({ user: null });
+      console.error(error);
+    }
+  }, []);
 
   useEffect(() => {
     fetchUserData();
@@ -68,7 +64,6 @@ function AuthProvider({ children }) {
         setAuthState: (authInfo) => setAuthInfo(authInfo),
         logout,
         isAuthenticated,
-        fetchUserData,
       }}
     >
       {children}

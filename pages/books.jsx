@@ -3,21 +3,37 @@ import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import BooksGrid from "../components/books-grid/BooksGrid";
 import {
-  useGetBooksOnList,
   useRemoveBookFromReadingList,
   useAddBookToFinishedList,
+  useGetAllBooks,
 } from "../lib/useBook";
 import Button from "../components/button/Button";
 import Spinner from "../components/loading-spinner/Spinner";
 import { formatDate } from "../lib/formatDate";
 import AuthCheck from "../components/AuthCheck";
+import { FINISHED_READING, PLAN_TO_READ } from "../lib/constants";
 
 export default function ReadingListPage() {
   const router = useRouter();
   const { list } = router.query;
-  const { data, error, status } = useGetBooksOnList(list);
-  const { status: mutationSatus, mutate } = useRemoveBookFromReadingList(list);
-  const markAsFinished = useAddBookToFinishedList();
+  const { data, error, status } = useGetAllBooks();
+
+  const { status: removeBookStatus, mutate: removeBookMutation } =
+    useRemoveBookFromReadingList(list);
+
+  const { status: markAsFinishedStatus, mutate: markAsFinishedMutation } =
+    useAddBookToFinishedList();
+
+  function filterBooksByStatus(book) {
+    if (
+      (book.status === PLAN_TO_READ && list === "reading") ||
+      (book.status === FINISHED_READING && list === "finished")
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   return (
     <AuthCheck>
@@ -27,7 +43,7 @@ export default function ReadingListPage() {
         {status === "success" && (
           <BooksGrid>
             {data.length > 0 ? (
-              data.map((book) => (
+              data.filter(filterBooksByStatus).map((book) => (
                 <SearchCard
                   authorName={book.authorName}
                   imageUrl={book.imageUrl}
@@ -45,10 +61,12 @@ export default function ReadingListPage() {
                     }}
                   >
                     <Button
-                      onClick={() => mutate({ googleId: book.googleId })}
+                      onClick={() =>
+                        removeBookMutation({ googleId: book.googleId })
+                      }
                       disabled={
-                        mutationSatus === "loading" ||
-                        markAsFinished.status === "loading"
+                        removeBookStatus === "loading" ||
+                        markAsFinishedStatus === "loading"
                       }
                     >
                       Remove
@@ -57,11 +75,11 @@ export default function ReadingListPage() {
                       <Button
                         variant="outline"
                         disabled={
-                          mutationSatus === "loading" ||
-                          markAsFinished.status === "loading"
+                          removeBookStatus === "loading" ||
+                          markAsFinishedStatus === "loading"
                         }
                         onClick={() => {
-                          markAsFinished.mutate({
+                          markAsFinishedMutation({
                             id: book.id,
                             googleId: book.googleId,
                           });

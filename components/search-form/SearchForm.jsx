@@ -32,7 +32,7 @@ export default function SearchForm({ onSearch }) {
         }}
       >
         <fieldset>
-          <label htmlFor="searchterm">Searchterm:</label>
+          <label htmlFor="searchterm">Title</label>
           <input
             value={inputs.searchterm}
             onChange={handleChange}

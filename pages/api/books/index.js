@@ -2,6 +2,7 @@ import nc from "next-connect";
 import {
   httpAddBookToList,
   httpDeleteBookFromList,
+  httpGetAllBooks,
   httpGetBookOnList,
 } from "../../../lib/controllers/book.controllers";
 import { onError, protect } from "../../../lib/middlewares";
@@ -12,6 +13,7 @@ const handler = nc({ onError });
 
 export default handler
   .use(protect)
-  .get(httpGetBookOnList)
+  .get(httpGetAllBooks)
+  // .get(httpGetBookOnList)
   .post(httpAddBookToList)
   .delete(httpDeleteBookFromList);

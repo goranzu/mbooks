@@ -6,22 +6,19 @@ import Spinner from "../components/loading-spinner/Spinner";
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import SearchForm from "../components/search-form/SearchForm";
-import { USER_BOOKS_QUERY_KEY } from "../lib/constants";
 import { formatDate } from "../lib/formatDate";
-import { useAddBookToReadingList } from "../lib/useBook";
+import { useAddBookToReadingList, useGetAllBooks } from "../lib/useBook";
 import { useSearch } from "../lib/useSearch";
 
 export default function SearchPage() {
   const queryClient = useQueryClient();
 
-  // Get the id's to check if some of the search results are already on one of the lists
-  let usersBooks = queryClient.getQueryData(USER_BOOKS_QUERY_KEY);
-  // usersBooks = usersBooks?.map((book) => book.id);
-
   const { mutate: search, status } = useSearch();
   const searchResults = queryClient.getQueryData("searchResults");
 
   const { mutate: mutateBook, status: bookStatus } = useAddBookToReadingList();
+
+  const { data: allBooks } = useGetAllBooks();
 
   function handleAddToReadingList({
     googleId,
@@ -39,9 +36,6 @@ export default function SearchPage() {
     });
   }
 
-  console.log(usersBooks);
-  console.log(searchResults);
-
   return (
     <AuthCheck>
       <>
@@ -53,7 +47,7 @@ export default function SearchPage() {
           )}
           <BooksGrid>
             {searchResults?.map(({ id, volumeInfo }) => {
-              const bookOnList = usersBooks?.find((book) => book.id === id);
+              const bookOnList = allBooks?.find((book) => book.googleId === id);
               return (
                 <SearchCard
                   key={id}

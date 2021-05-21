@@ -5,6 +5,7 @@ import BookDetail from "../../../components/book-detail/BookDetatil";
 import { BookNote } from "../../../components/book-note/BookNote";
 import Spinner from "../../../components/loading-spinner/Spinner";
 import Page from "../../../components/page/Page";
+import { USER_BOOKS_QUERY_KEY } from "../../../lib/constants";
 import { useGetBookDetails } from "../../../lib/useBook";
 import styles from "../../../styles/detail.module.css";
 
@@ -14,9 +15,11 @@ export default function BookDetailsPage() {
   const { list, googleId } = router.query;
   const { data, status } = useGetBookDetails(googleId);
   const queryClient = useQueryClient();
-  const usersBooks = queryClient.getQueryData("usersBooks");
+  const usersBooks = queryClient.getQueryData(USER_BOOKS_QUERY_KEY);
 
-  const bookOnUsersList = usersBooks?.find((book) => book.id === googleId);
+  const bookOnUsersList = usersBooks?.find(
+    (book) => book.googleId === googleId,
+  );
 
   /*
   If book is not on reading list option give them an option to add from this page
