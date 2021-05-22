@@ -29,9 +29,6 @@ export function BookNote({ googleId, list, defaultNote }) {
           rows="10"
         ></textarea>
         <Button type="submit">Make Note</Button>
-        <Button variant="outline" type="button">
-          Remove
-        </Button>
       </form>
     </div>
   );

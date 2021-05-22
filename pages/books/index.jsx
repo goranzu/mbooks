@@ -3,7 +3,7 @@ import Page from "../../components/page/Page";
 import SearchCard from "../../components/search-card/SearchCard";
 import BooksGrid from "../../components/books-grid/BooksGrid";
 import {
-  useRemoveBookFromReadingList,
+  useRemoveBookFromList,
   useAddBookToFinishedList,
   useGetAllBooks,
 } from "../../lib/useBook";
@@ -19,7 +19,7 @@ export default function ListPage() {
   const { data, error, status } = useGetAllBooks();
 
   const { status: removeBookStatus, mutate: removeBookMutation } =
-    useRemoveBookFromReadingList(list);
+    useRemoveBookFromList(list);
 
   const { status: markAsFinishedStatus, mutate: markAsFinishedMutation } =
     useAddBookToFinishedList();
@@ -84,10 +84,7 @@ export default function ListPage() {
                           markAsFinishedStatus === "loading"
                         }
                         onClick={() => {
-                          markAsFinishedMutation({
-                            id: book.id,
-                            googleId: book.googleId,
-                          });
+                          markAsFinishedMutation(book.googleId);
                         }}
                       >
                         Finished

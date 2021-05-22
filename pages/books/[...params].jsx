@@ -1,11 +1,13 @@
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
+import AddToFinishedListButton from "../../components/AddToFinishedListButton";
+import AddToReadingListButton from "../../components/AddToReadingButton";
 import AuthCheck from "../../components/AuthCheck";
 import BookDetail from "../../components/book-detail/BookDetatil";
 import { BookNote } from "../../components/book-note/BookNote";
-import Button from "../../components/button/Button";
 import Spinner from "../../components/loading-spinner/Spinner";
 import Page from "../../components/page/Page";
+import RemoveBookButton from "../../components/RemoveBookButton";
 import { USER_BOOKS_QUERY_KEY } from "../../lib/constants";
 import { useGetBookDetails } from "../../lib/useBook";
 import styles from "../../styles/detail.module.css";
@@ -18,11 +20,13 @@ export default function BookDetailsPage() {
   let list = null;
   let googleId = null;
 
-  if (params[0] === "reading" || params[0] === "finished") {
-    list = params[0];
-    googleId = params[1];
-  } else {
-    googleId = params[0];
+  if (params) {
+    if (params[0] === "reading" || params[0] === "finished") {
+      list = params[0];
+      googleId = params[1];
+    } else {
+      googleId = params[0];
+    }
   }
 
   const { data, status } = useGetBookDetails(googleId);
@@ -33,33 +37,7 @@ export default function BookDetailsPage() {
     (book) => book.googleId === googleId,
   );
 
-  let buttons = null;
-
-  if (list === "reading") {
-    buttons = (
-      <>
-        <Button>Finished reading</Button>
-        <Button variant="outline">Remove</Button>
-      </>
-    );
-  } else if (list === "finished") {
-    buttons = <Button variant="outline">Remove</Button>;
-  } else {
-    buttons = <Button>Add to reading list</Button>;
-  }
-
-  /*
-  If book is not on reading list option give them an option to add from this page
-  {
-    googleId,
-    title,
-    authorName,
-    imageUrl,
-    publishedDate,
-  }
-
-  and if it is on one of the list give them the option to remove
-  */
+  console.log(usersBooks);
 
   if (status === "success") {
     // Using var because to escape block scoping
@@ -74,6 +52,31 @@ export default function BookDetailsPage() {
         publishedDate,
       },
     } = data;
+
+    var buttons = null;
+
+    if (list === "reading") {
+      buttons = (
+        <>
+          <AddToFinishedListButton googleId={googleId} />
+          <RemoveBookButton list={list} googleId={googleId} />
+        </>
+      );
+    } else if (list === "finished") {
+      buttons = <RemoveBookButton list={list} googleId={googleId} />;
+    } else {
+      buttons = (
+        <AddToReadingListButton
+          book={{
+            googleId,
+            title,
+            authorName: authors[0],
+            imageUrl: imageLinks.smallThumbnail,
+            publishedDate,
+          }}
+        />
+      );
+    }
   }
 
   return (
