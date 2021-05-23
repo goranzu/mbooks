@@ -21,6 +21,8 @@
   --clr-400: #d8dee9;
   --clr-500: #2e3440;
 
+  --accent-100: #d08770;
+
   --text-color: var(--clr-500);
   --background-clr: #fff;
 }

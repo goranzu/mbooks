@@ -1,21 +1,19 @@
-import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { useRemoveBookFromList } from "../lib/useBook";
+import { useDeleteBook } from "../lib/useBook";
 import Button from "./button/Button";
 
-export default function RemoveBookButton({ list, googleId }) {
+export default function RemoveBookButton({ list, googleId, ...props }) {
   const { mutateAsync: removeBookMutation, status: removeBookStatus } =
-    useRemoveBookFromList(list);
-
-  const router = useRouter();
+    useDeleteBook();
 
   return (
     <Button
-      variant="outline"
+      variant="delete"
+      disabled={removeBookStatus === "loading"}
       onClick={() => {
-        removeBookMutation({ googleId });
-        router.push(`/books/${googleId}`);
+        removeBookMutation({ googleId, list });
       }}
+      {...props}
     >
       Remove
     </Button>
@@ -25,4 +23,5 @@ export default function RemoveBookButton({ list, googleId }) {
 RemoveBookButton.propTypes = {
   list: PropTypes.string,
   googleId: PropTypes.string,
+  variant: PropTypes.string,
 };

@@ -1,22 +1,20 @@
-import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { useAddBookToFinishedList } from "../lib/useBook";
 import Button from "./button/Button";
 
-export default function AddToFinishedListButton({ googleId }) {
+export default function AddToFinishedListButton({ googleId, ...props }) {
   const {
     mutateAsync: addBookFinishedListMutation,
     status: addBookToFinishedListStatus,
   } = useAddBookToFinishedList();
 
-  const router = useRouter();
-
   return (
     <Button
+      disabled={addBookToFinishedListStatus === "loading"}
       onClick={() => {
         addBookFinishedListMutation(googleId);
-        router.push(`/books/finished/${googleId}`);
       }}
+      {...props}
     >
       Finished
     </Button>

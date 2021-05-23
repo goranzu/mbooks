@@ -3,7 +3,20 @@ import PropTypes from "prop-types";
 import styles from "./button.module.css";
 
 export default function Button({ children, variant, ...props }) {
-  const className = variant === "outline" ? styles.outline : styles.button;
+  let className = null;
+
+  switch (variant) {
+    case "outline":
+      className = styles.outline;
+      break;
+    case "delete":
+      className = styles.del;
+      break;
+    default:
+      className = styles.button;
+      break;
+  }
+
   return (
     <button className={className} {...props}>
       {children}

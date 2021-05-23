@@ -1,11 +1,11 @@
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import BooksGrid from "../components/books-grid/BooksGrid";
-import { useGetAllBooksOnList, useDeleteBook } from "../lib/useBook";
-import Button from "../components/button/Button";
+import { useGetAllBooksOnList } from "../lib/useBook";
 import Spinner from "../components/loading-spinner/Spinner";
 import { formatDate } from "../lib/formatDate";
 import AuthCheck from "../components/AuthCheck";
+import RemoveBookButton from "../components/RemoveBookButton";
 
 export default function FinishedListPage() {
   const list = "finished";
@@ -15,9 +15,6 @@ export default function FinishedListPage() {
     error: booksError,
     status: booksStatus,
   } = useGetAllBooksOnList(list);
-
-  const { status: removeBookStatus, mutate: removeBookMutation } =
-    useDeleteBook();
 
   return (
     <AuthCheck>
@@ -35,17 +32,9 @@ export default function FinishedListPage() {
                   title={book.title}
                   key={book.id}
                   googleId={book.googleId}
-                  list={list}
                 >
                   <div>
-                    <Button
-                      onClick={() =>
-                        removeBookMutation({ googleId: book.googleId, list })
-                      }
-                      disabled={removeBookStatus === "loading"}
-                    >
-                      Remove
-                    </Button>
+                    <RemoveBookButton list={list} googleId={book.googleId} />
                   </div>
                 </SearchCard>
               ))

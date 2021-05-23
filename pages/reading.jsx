@@ -1,15 +1,12 @@
 import Page from "../components/page/Page";
 import SearchCard from "../components/search-card/SearchCard";
 import BooksGrid from "../components/books-grid/BooksGrid";
-import {
-  useGetAllBooksOnList,
-  useAddBookToFinishedList,
-  useDeleteBook,
-} from "../lib/useBook";
-import Button from "../components/button/Button";
+import { useGetAllBooksOnList } from "../lib/useBook";
 import Spinner from "../components/loading-spinner/Spinner";
 import { formatDate } from "../lib/formatDate";
 import AuthCheck from "../components/AuthCheck";
+import RemoveBookButton from "../components/RemoveBookButton";
+import AddToFinishedListButton from "../components/AddToFinishedListButton";
 
 export default function ReadingListPage() {
   const list = "reading";
@@ -19,12 +16,6 @@ export default function ReadingListPage() {
     error: booksError,
     status: booksStatus,
   } = useGetAllBooksOnList(list);
-
-  const { status: removeBookStatus, mutate: removeBookMutation } =
-    useDeleteBook();
-
-  const { status: markAsFinishedStatus, mutate: markAsFinishedMutation } =
-    useAddBookToFinishedList();
 
   return (
     <AuthCheck>
@@ -42,7 +33,6 @@ export default function ReadingListPage() {
                   title={book.title}
                   key={book.id}
                   googleId={book.googleId}
-                  list={list}
                 >
                   <div
                     style={{
@@ -51,29 +41,8 @@ export default function ReadingListPage() {
                       justifyContent: "center",
                     }}
                   >
-                    <Button
-                      onClick={() =>
-                        removeBookMutation({ googleId: book.googleId, list })
-                      }
-                      disabled={
-                        removeBookStatus === "loading" ||
-                        markAsFinishedStatus === "loading"
-                      }
-                    >
-                      Remove
-                    </Button>
-                    <Button
-                      variant="outline"
-                      disabled={
-                        removeBookStatus === "loading" ||
-                        markAsFinishedStatus === "loading"
-                      }
-                      onClick={() => {
-                        markAsFinishedMutation(book.googleId);
-                      }}
-                    >
-                      Finished
-                    </Button>
+                    <RemoveBookButton list={list} googleId={book.googleId} />
+                    <AddToFinishedListButton googleId={book.googleId} />
                   </div>
                 </SearchCard>
               ))

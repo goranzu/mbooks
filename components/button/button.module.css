@@ -1,5 +1,6 @@
 .button,
-.outline {
+.outline,
+.del {
   border: none;
   background: var(--clr-100);
   padding: 0.5em;
@@ -13,4 +14,8 @@
   background-color: transparent;
   color: black;
   border-color: var(--clr-100);
+}
+
+.del {
+  background-color: var(--accent-100);
 }

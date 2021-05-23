@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { useAddBookToReadingList } from "../lib/useBook";
 import Button from "./button/Button";
@@ -9,12 +8,11 @@ export default function AddToReadingListButton({ book }) {
     status: addBookToReadingListStatus,
   } = useAddBookToReadingList();
 
-  const router = useRouter();
   return (
     <Button
+      disabled={addBookToReadingListStatus === "loading"}
       onClick={() => {
         addBookToReadingListMutation(book);
-        router.push(`/books/reading/${book.googleId}`);
       }}
     >
       Add to readinglist
