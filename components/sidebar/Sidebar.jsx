@@ -9,13 +9,11 @@ const navItems = [
   },
   {
     label: "Reading List",
-    path: "/books",
-    query: "reading",
+    path: "/reading",
   },
   {
     label: "Finished Reading",
-    path: "/books",
-    query: "finished",
+    path: "/finished",
   },
 ];
 
@@ -39,7 +37,6 @@ export default function Sidebar() {
                 <Link
                   href={{
                     pathname: item.path,
-                    query: item.query ? { list: item.query } : null,
                   }}
                 >
                   {item.label}

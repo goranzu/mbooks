@@ -1,9 +1,9 @@
 import nc from "next-connect";
-import { FINISHED_READING, PLAN_TO_READ } from "../../../../lib/constants";
-import { UserInputError } from "../../../../lib/errors";
-import { onError, protect } from "../../../../lib/middlewares";
-import prisma from "../../../../lib/prisma";
-import { validateListQuery } from "../../../../lib/util";
+import { FINISHED_READING, PLAN_TO_READ } from "../../../lib/constants";
+import { UserInputError } from "../../../lib/errors";
+import { onError, protect } from "../../../lib/middlewares";
+import prisma from "../../../lib/prisma";
+import { validateListQuery } from "../../../lib/util";
 
 const handler = nc({ onError });
 
