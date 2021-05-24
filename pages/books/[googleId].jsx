@@ -1,9 +1,12 @@
 import { useRouter } from "next/router";
+import AddToFinishedListButton from "../../components/AddToFinishedListButton";
+import AddToReadingListButton from "../../components/AddToReadingButton";
 import AuthCheck from "../../components/AuthCheck";
 import BookDetail from "../../components/book-detail/BookDetatil";
 import { BookNote } from "../../components/book-note/BookNote";
 import Spinner from "../../components/loading-spinner/Spinner";
 import Page from "../../components/page/Page";
+import RemoveBookButton from "../../components/RemoveBookButton";
 import { FINISHED_READING, PLAN_TO_READ } from "../../lib/constants";
 import { useGetAllBooks, useGetBookDetails } from "../../lib/useBook";
 import styles from "../../styles/detail.module.css";
@@ -19,6 +22,8 @@ export default function BookDetailsPage() {
 
   const bookOnUsersList = allBooks?.find((book) => book.googleId === googleId);
 
+  console.log(bookOnUsersList);
+
   if (status === "success") {
     // Using var because to escape block scoping
     var {
@@ -33,6 +38,14 @@ export default function BookDetailsPage() {
       },
     } = data;
   }
+
+  const book = {
+    googleId,
+    title,
+    authorName: authors ? authors[0] : "unkown",
+    imageUrl: imageLinks?.smallThumbnail,
+    publishedDate,
+  };
 
   return (
     <AuthCheck>
@@ -51,7 +64,20 @@ export default function BookDetailsPage() {
                 categories={categories}
                 publishedDate={publishedDate}
               />
-              {/* <div>{buttons}</div> */}
+              {/* Ternary to render the correct buttons, checks the books current status */}
+              {bookOnUsersList === undefined ? (
+                <AddToReadingListButton book={book} />
+              ) : bookOnUsersList.status === PLAN_TO_READ ? (
+                <div>
+                  <RemoveBookButton list="reading" googleId={googleId} />
+                  <AddToFinishedListButton
+                    style={{ marginLeft: "1em" }}
+                    googleId={googleId}
+                  />
+                </div>
+              ) : bookOnUsersList.status === FINISHED_READING ? (
+                <RemoveBookButton list="finished" googleId={googleId} />
+              ) : null}
             </>
           )}
           {status === "success" && bookOnUsersList && (
