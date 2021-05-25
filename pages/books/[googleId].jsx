@@ -22,8 +22,6 @@ export default function BookDetailsPage() {
 
   const bookOnUsersList = allBooks?.find((book) => book.googleId === googleId);
 
-  console.log(bookOnUsersList);
-
   if (status === "success") {
     // Using var because to escape block scoping
     var {

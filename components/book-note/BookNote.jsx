@@ -1,34 +1,44 @@
 import PropTypes from "prop-types";
+import toast from "react-hot-toast";
 import { useAddNoteToBook } from "../../lib/useBook";
 import Button from "../button/Button";
 import styles from "./book-note.module.css";
 
 export function BookNote({ googleId, list, defaultNote }) {
-  const { mutate: addNoteToBook, status: addNoteStatus } =
+  const { mutateAsync: addNoteToBook, status: addNoteStatus } =
     useAddNoteToBook(list);
+
+  const isDisabled = addNoteStatus === "loading";
 
   return (
     <div className={styles.note}>
       <p>Notes</p>
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           const note = e.target.note.value;
           if (!note) {
             return;
           }
 
-          addNoteToBook({ note, googleId });
+          try {
+            await addNoteToBook({ note, googleId });
+            toast.success("Note Added!");
+          } catch (error) {
+            toast.error(error.message || "Something went wrong!");
+          }
         }}
       >
         <textarea
           defaultValue={defaultNote || ""}
-          disabled={addNoteStatus === "loading"}
+          disabled={isDisabled}
           name="note"
           id="note"
           rows="10"
         ></textarea>
-        <Button type="submit">Make Note</Button>
+        <Button disabled={isDisabled} type="submit">
+          Make Note
+        </Button>
       </form>
     </div>
   );

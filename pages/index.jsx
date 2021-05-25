@@ -8,6 +8,9 @@ export default function Home() {
   const { isModalOpen, openModal } = useModal();
   const [register, setRegister] = useState(false);
 
+  // Handle loading states
+  // disable note button while sending note
+
   return (
     <>
       {isModalOpen && (

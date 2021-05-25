@@ -19,3 +19,9 @@
 .del {
   background-color: var(--accent-100);
 }
+
+.button:disabled,
+.outline:disabled,
+.del:disabled {
+  background-color: lightgray;
+}

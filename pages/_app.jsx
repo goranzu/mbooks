@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Hydrate } from "react-query/hydration";
 import PropTypes from "prop-types";
 import { useRef } from "react";
+import { Toaster } from "react-hot-toast";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/globals.css";
 import "../styles/reset.css";
@@ -38,7 +39,7 @@ function MyApp({ Component, pageProps }) {
           <ModalProvider>
             <Hydrate state={pageProps.dehydratedState}>
               <ReactQueryDevtools />
-              {/* <Component {...pageProps} /> */}
+              <Toaster />
               <AppRoutes component={Component} pageProps={pageProps} />
             </Hydrate>
           </ModalProvider>
