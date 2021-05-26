@@ -60,14 +60,24 @@ export default function AuthForm({ register, flipForm }) {
       if (error.response) {
         const { status, data } = error.response;
 
-        if (status === 401 && data?.error?.path === "/api/auth/register") {
+        if (status === 401 && data.error?.path === "/api/auth/login") {
+          stateFunctions.setErrors({
+            network: [data?.error?.message],
+          });
+          return;
+        } else if (
+          status === 401 &&
+          data.error?.path === "/api/auth/register"
+        ) {
           stateFunctions.setErrors({
             username: [data?.error?.message],
           });
+          return;
         } else {
           stateFunctions.setErrors({
             network: ["Something went wrong. Please try again."],
           });
+          return;
         }
       }
 
