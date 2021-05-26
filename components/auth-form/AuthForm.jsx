@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { useQueryClient } from "react-query";
 import * as yup from "yup";
+import toast from "react-hot-toast";
 import { useAuthContext } from "../../context/AuthContext";
 import { useModal } from "../../context/ModalContext";
 import { formatError } from "../../lib/formatError";
@@ -41,13 +42,19 @@ export default function AuthForm({ register, flipForm }) {
       stateFunctions.setLoading();
 
       const { data } = await axios.post(endpoint, { username, password });
+
+      toast.success("Success!");
+
       authContext.setAuthState(data.data);
 
       stateFunctions.setResolved();
+
       closeModal();
       router.push("/search");
     } catch (error) {
       console.error(error);
+
+      // toast.error(error.message || "Try Again");
 
       // network error handling
       if (error.response) {
@@ -153,14 +160,14 @@ export default function AuthForm({ register, flipForm }) {
           >
             {state.errors?.password || state.errors?.network}
           </ErrorMessage>
+          <button
+            disabled={state.status === "loading"}
+            className={register ? "btn" : "btn btn--outline"}
+            type="submit"
+          >
+            {register ? "Register" : "Login"}
+          </button>
         </fieldset>
-        <button
-          disabled={state.status === "loading"}
-          className={register ? "btn" : "btn btn--outline"}
-          type="submit"
-        >
-          {register ? "Register" : "Login"}
-        </button>
       </form>
     </>
   );

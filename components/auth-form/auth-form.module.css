@@ -34,3 +34,17 @@
 .form input + p {
   margin-top: 0.2em;
 }
+
+.form fieldset:disabled > input,
+.form fieldset:disabled > button {
+  background-color: lightgray;
+}
+
+.form fieldset:disabled > button {
+  color: black;
+  cursor: default;
+}
+
+.form fieldset > button {
+  margin-right: auto;
+}
