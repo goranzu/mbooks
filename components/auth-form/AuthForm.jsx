@@ -52,20 +52,23 @@ export default function AuthForm({ register, flipForm }) {
       closeModal();
       router.push("/search");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
 
       // toast.error(error.message || "Try Again");
 
       // network error handling
       if (error.response) {
-        const { status } = error.response;
-        stateFunctions.setErrors({
-          network: [
-            status === 401
-              ? "Invalid credentials. Please try again."
-              : "Something went wrong. Please try again.",
-          ],
-        });
+        const { status, data } = error.response;
+
+        if (status === 401 && data?.error?.path === "/api/auth/register") {
+          stateFunctions.setErrors({
+            username: [data?.error?.message],
+          });
+        } else {
+          stateFunctions.setErrors({
+            network: ["Something went wrong. Please try again."],
+          });
+        }
       }
 
       // Validation error handling
