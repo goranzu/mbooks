@@ -5,13 +5,17 @@ import styles from "./page.module.css";
 
 function Page({ children }) {
   return (
-    <>
-      <Header />
+    <div>
+      <div>
+        <div className={styles.container}>
+          <Header />
+        </div>
+      </div>
       <main className={styles.wrapper}>
         <Sidebar />
         {children}
       </main>
-    </>
+    </div>
   );
 }
 

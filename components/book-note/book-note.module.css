@@ -12,6 +12,6 @@
   padding: 1em;
 }
 
-.note button + button {
-  margin-left: 1em;
+.note * + * {
+  margin-top: 0.5em;
 }

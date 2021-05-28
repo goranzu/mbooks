@@ -20,7 +20,7 @@ const navItems = [
 export default function Sidebar() {
   const router = useRouter();
   return (
-    <aside className={`${styles.sidebar} fs-600`}>
+    <aside className={`${styles.sidebar} fs-500`}>
       <nav className={styles.nav}>
         <ul>
           {navItems.map((item) => {

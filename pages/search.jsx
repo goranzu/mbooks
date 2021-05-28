@@ -20,48 +20,47 @@ export default function SearchPage() {
 
   return (
     <AuthCheck>
-      <>
-        <Page>
-          <SearchForm onSearch={search} />
-          <Spinner show={status === "loading"} />
-          {status === "error" && (
-            <p>Something went wrong please try again later</p>
-          )}
-          <BooksGrid>
-            {searchResults?.map(({ id, volumeInfo }) => {
-              const bookOnList = allBooks?.find((book) => book.googleId === id);
-              return (
-                <SearchCard
-                  key={id}
-                  imageUrl={volumeInfo.imageLinks?.smallThumbnail}
-                  title={volumeInfo.title}
-                  publishedDate={formatDate(volumeInfo.publishedDate)}
-                  authorName={
-                    volumeInfo.authors ? volumeInfo.authors[0] : "unkown"
-                  }
-                  googleId={id}
-                >
-                  {bookOnList ? (
-                    <p>On your list.</p>
-                  ) : (
-                    <AddToReadingListButton
-                      book={{
-                        googleId: id,
-                        title: volumeInfo.title,
-                        authorName: volumeInfo.authors
-                          ? volumeInfo.authors[0]
-                          : "unkown",
-                        imageUrl: volumeInfo.imageLinks?.smallThumbnail,
-                        publishedDate: volumeInfo.publishedDate,
-                      }}
-                    />
-                  )}
-                </SearchCard>
-              );
-            })}
-          </BooksGrid>
-        </Page>
-      </>
+      <Page>
+        <SearchForm onSearch={search} />
+        {/* Apply styling only on this page */}
+        <Spinner show={status === "loading"} style={{ gridColumnStart: 2 }} />
+        {status === "error" && (
+          <p>Something went wrong please try again later</p>
+        )}
+        <BooksGrid>
+          {searchResults?.map(({ id, volumeInfo }) => {
+            const bookOnList = allBooks?.find((book) => book.googleId === id);
+            return (
+              <SearchCard
+                key={id}
+                imageUrl={volumeInfo.imageLinks?.smallThumbnail}
+                title={volumeInfo.title}
+                publishedDate={formatDate(volumeInfo.publishedDate)}
+                authorName={
+                  volumeInfo.authors ? volumeInfo.authors[0] : "unkown"
+                }
+                googleId={id}
+              >
+                {bookOnList ? (
+                  <p>On your list.</p>
+                ) : (
+                  <AddToReadingListButton
+                    book={{
+                      googleId: id,
+                      title: volumeInfo.title,
+                      authorName: volumeInfo.authors
+                        ? volumeInfo.authors[0]
+                        : "unkown",
+                      imageUrl: volumeInfo.imageLinks?.smallThumbnail,
+                      publishedDate: volumeInfo.publishedDate,
+                    }}
+                  />
+                )}
+              </SearchCard>
+            );
+          })}
+        </BooksGrid>
+      </Page>
     </AuthCheck>
   );
 }
